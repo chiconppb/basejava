@@ -28,16 +28,10 @@ public class ArrayStorage {
 
     void delete(String uuid) {
         for (int i = 0; i < count; i++) {
-            Resume innerCounter = storage[i];
-            if (innerCounter.uuid.equals(uuid)) {
-                storage[i] = null;
+            if (storage[i].uuid.equals(uuid)) {
+                storage[i] = storage[count - 1];
+                storage[count - 1] = null;
                 count--;
-                // If there are elements after deleted -> moving elements left
-                while (storage[i + 1] != null) {
-                    storage[i] = storage[i + 1];
-                    storage[i + 1] = null;
-                    i++;
-                }
                 return;
             }
         }
@@ -48,12 +42,12 @@ public class ArrayStorage {
      * @return array, contains only Resumes in storage (without null)
      */
     Resume[] getAll() {
-        Resume[] resume = new Resume[count];
+        Resume[] allResume = new Resume[count];
         // Add "Not null" elements to new array
         for (int i = 0; i < count; i++) {
-            resume[i] = storage[i];
+            allResume[i] = storage[i];
         }
-        return resume;
+        return allResume;
     }
 
     int size() {
