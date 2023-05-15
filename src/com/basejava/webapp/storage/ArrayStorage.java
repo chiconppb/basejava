@@ -17,29 +17,42 @@ public class ArrayStorage {
     }
 
     void save(Resume r) {
-        storage[count] = r;
-        count++;
+        if (count < storage.length) {
+            if (this.search(r.getUuid()) < 0) {
+                storage[count] = r;
+                count++;
+                return;
+            }
+            System.out.println("ERROR: " + r.getUuid() + " уже существует!");
+            return;
+        }
+        System.out.println("ERROR: Массив полон!");
     }
 
     Resume get(String uuid) {
-        for (int i = 0; i < count; i++) {
-            if (storage[i].getUuid().equals(uuid)) {
-                return storage[i];
-            }
+        if (this.search(uuid) >= 0) {
+            return storage[this.search(uuid)];
         }
+        System.out.println("ERROR: " + uuid + " отсутствует в массиве!");
         return null;
     }
 
-    void delete(String uuid) {
-        for (int i = 0; i < count; i++) {
-            if (storage[i].getUuid().equals(uuid)) {
-                storage[i] = storage[count - 1];
-                storage[count - 1] = null;
-                count--;
-                return;
-            }
+    public void update(Resume resume) {
+        if (this.search(resume.getUuid()) >= 0) {
+            storage[this.search(resume.getUuid())] = resume;
+            return;
         }
-        System.out.println("Данный uuid отсутствует в массиве!");
+        System.out.println("ERROR: " + resume.getUuid() + " отсутствует в массиве!");
+    }
+
+    void delete(String uuid) {
+        if (this.search(uuid) >= 0) {
+            storage[this.search(uuid)] = storage[count - 1];
+            storage[count - 1] = null;
+            count--;
+            return;
+        }
+        System.out.println("ERROR: " + uuid + " отсутствует в массиве!");
     }
 
     /**
@@ -51,5 +64,14 @@ public class ArrayStorage {
 
     int size() {
         return count;
+    }
+
+    private int search(String uuid) {
+        for (int i = 0; i < count; i++) {
+            if (uuid.equals(storage[i].getUuid())) {
+                return i;
+            }
+        }
+        return -1;
     }
 }
