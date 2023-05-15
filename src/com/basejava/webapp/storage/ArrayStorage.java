@@ -8,7 +8,7 @@ import java.util.Arrays;
  * Array based storage for Resumes
  */
 public class ArrayStorage {
-    Resume[] storage = new Resume[10000];
+    private Resume[] storage = new Resume[10000];
     private int count;
 
     void clear() {
@@ -23,7 +23,7 @@ public class ArrayStorage {
 
     Resume get(String uuid) {
         for (int i = 0; i < count; i++) {
-            if (storage[i].uuid.equals(uuid)) {
+            if (storage[i].getUuid().equals(uuid)) {
                 return storage[i];
             }
         }
@@ -32,7 +32,7 @@ public class ArrayStorage {
 
     void delete(String uuid) {
         for (int i = 0; i < count; i++) {
-            if (storage[i].uuid.equals(uuid)) {
+            if (storage[i].getUuid().equals(uuid)) {
                 storage[i] = storage[count - 1];
                 storage[count - 1] = null;
                 count--;
@@ -46,12 +46,7 @@ public class ArrayStorage {
      * @return array, contains only Resumes in storage (without null)
      */
     Resume[] getAll() {
-        Resume[] allResume = new Resume[count];
-        // Add "Not null" elements to new array
-        for (int i = 0; i < count; i++) {
-            allResume[i] = storage[i];
-        }
-        return allResume;
+        return Arrays.copyOf(storage, count);
     }
 
     int size() {
