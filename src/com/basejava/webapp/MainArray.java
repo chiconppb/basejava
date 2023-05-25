@@ -1,6 +1,7 @@
-package com.basejava.webapp.storage;
+package com.basejava.webapp;
 
 import com.basejava.webapp.model.Resume;
+import com.basejava.webapp.storage.ArrayStorage;
 
 import java.io.BufferedReader;
 import java.io.IOException;
