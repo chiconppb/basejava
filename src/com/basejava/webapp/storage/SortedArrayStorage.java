@@ -7,28 +7,23 @@ import java.util.Arrays;
 public class SortedArrayStorage extends AbstractArrayStorage {
 
     @Override
-    public void clear() {
-
-    }
-
-    @Override
-    public void update(Resume r) {
-
-    }
-
-    @Override
     public void save(Resume r) {
 
     }
 
     @Override
     public void delete(String uuid) {
-
-    }
-
-    @Override
-    public Resume[] getAll() {
-        return new Resume[0];
+        int index = getIndex(uuid);
+        if (index < 0) {
+            System.out.println("ERROR: " + uuid + " отсутствует в массиве!");
+        } else {
+            while (storage[index + 1] != null) {
+                storage[index] = storage[index + 1];
+                index++;
+            }
+            storage[index] = null;
+            count--;
+        }
     }
 
     @Override

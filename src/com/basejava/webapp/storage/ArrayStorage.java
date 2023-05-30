@@ -2,16 +2,10 @@ package com.basejava.webapp.storage;
 
 import com.basejava.webapp.model.Resume;
 
-import java.util.Arrays;
-
 /**
  * Array based storage for Resumes
  */
 public class ArrayStorage extends AbstractArrayStorage {
-    public void clear() {
-        Arrays.fill(storage, 0, count, null);
-        count = 0;
-    }
 
     public void save(Resume r) {
         if (count >= STORAGE_LIMIT) {
@@ -24,31 +18,15 @@ public class ArrayStorage extends AbstractArrayStorage {
         }
     }
 
-    public void update(Resume resume) {
-        int index = getIndex(resume.getUuid());
-        if (index >= 0) {
-            storage[index] = resume;
-            return;
-        }
-        System.out.println("ERROR: " + resume.getUuid() + " отсутствует в массиве!");
-    }
-
     public void delete(String uuid) {
         int index = getIndex(uuid);
-        if (index >= 0) {
+        if (index < 0) {
+            System.out.println("ERROR: " + uuid + " отсутствует в массиве!");
+        } else {
             storage[index] = storage[count - 1];
             storage[count - 1] = null;
             count--;
-            return;
         }
-        System.out.println("ERROR: " + uuid + " отсутствует в массиве!");
-    }
-
-    /**
-     * @return array, contains only Resumes in storage (without null)
-     */
-    public Resume[] getAll() {
-        return Arrays.copyOf(storage, count);
     }
 
     protected int getIndex(String uuid) {
