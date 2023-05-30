@@ -8,7 +8,17 @@ public class SortedArrayStorage extends AbstractArrayStorage {
 
     @Override
     public void save(Resume r) {
-
+        if (count >= STORAGE_LIMIT) {
+            System.out.println("ERROR: Массив полон!");
+        } else if (getIndex(r.getUuid()) >= 0) {
+            System.out.println("ERROR: " + r.getUuid() + " уже существует!");
+        } else {
+            int index = Math.abs(getIndex(r.getUuid()) + 1);
+            for (int i = count; i > index; i--)
+                storage[i] = storage[i - 1];
+            storage[index] = r;
+            count++;
+        }
     }
 
     @Override
