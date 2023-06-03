@@ -31,7 +31,8 @@ public abstract class AbstractArrayStorage implements Storage {
         } else if (getIndex(r.getUuid()) >= 0) {
             System.out.println("ERROR: " + r.getUuid() + " уже существует!");
         } else {
-            insertResume(r);
+            int index = Math.abs(getIndex(r.getUuid()) + 1);
+            insertResume(r, index);
             count++;
         }
     }
@@ -68,7 +69,7 @@ public abstract class AbstractArrayStorage implements Storage {
 
     protected abstract int getIndex(String uuid);
 
-    protected abstract void insertResume(Resume r);
+    protected abstract void insertResume(Resume r, int index);
 
     protected abstract void deleteResume(int index);
 }
