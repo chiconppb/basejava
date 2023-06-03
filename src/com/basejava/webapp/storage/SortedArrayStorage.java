@@ -19,16 +19,14 @@ public class SortedArrayStorage extends AbstractArrayStorage {
         for (int i = count; i > index; i--)
             storage[i] = storage[i - 1];
         storage[index] = r;
-        count++;
     }
 
     @Override
-    protected void eraseResume(int index) {
+    protected void deleteResume(int index) {
         while (storage[index + 1] != null) {
             storage[index] = storage[index + 1];
             index++;
         }
         storage[index] = null;
-        count--;
     }
 }
