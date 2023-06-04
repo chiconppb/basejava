@@ -1,5 +1,7 @@
 package com.basejava.webapp.storage;
 
+import com.basejava.webapp.exception.ExistStorageException;
+import com.basejava.webapp.exception.NotExistStorageException;
 import com.basejava.webapp.model.Resume;
 
 import java.util.Arrays;
@@ -22,14 +24,14 @@ public abstract class AbstractArrayStorage implements Storage {
             storage[index] = resume;
             return;
         }
-        System.out.println("ERROR: " + resume.getUuid() + " отсутствует в массиве!");
+        throw new NotExistStorageException(resume.getUuid());
     }
 
     public void save(Resume r) {
         if (count >= STORAGE_LIMIT) {
             System.out.println("ERROR: Массив полон!");
         } else if (getIndex(r.getUuid()) >= 0) {
-            System.out.println("ERROR: " + r.getUuid() + " уже существует!");
+            throw new ExistStorageException(r.getUuid());
         } else {
             int index = Math.abs(getIndex(r.getUuid()) + 1);
             insertResume(r, index);
@@ -42,14 +44,13 @@ public abstract class AbstractArrayStorage implements Storage {
         if (index >= 0) {
             return storage[index];
         }
-        System.out.println("ERROR: " + uuid + " отсутствует в массиве!");
-        return null;
+        throw new NotExistStorageException(uuid);
     }
 
     public void delete(String uuid) {
         int index = getIndex(uuid);
         if (index < 0) {
-            System.out.println("ERROR: " + uuid + " отсутствует в массиве!");
+            throw new NotExistStorageException(uuid);
         } else {
             deleteResume(index);
             count--;
