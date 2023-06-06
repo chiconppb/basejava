@@ -17,6 +17,6 @@ public class MainReflection {
         System.out.println(r);
         System.out.println("=================================");
         Method m1 = r.getClass().getMethod("toString");
-        System.out.println(m1.getName() +" via reflection: " + m1.invoke(r));
+        System.out.println(m1.getName() + " via reflection: " + m1.invoke(r));
     }
 }

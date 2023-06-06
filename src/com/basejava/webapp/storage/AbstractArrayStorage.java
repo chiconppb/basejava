@@ -2,6 +2,7 @@ package com.basejava.webapp.storage;
 
 import com.basejava.webapp.exception.ExistStorageException;
 import com.basejava.webapp.exception.NotExistStorageException;
+import com.basejava.webapp.exception.StorageOverflowException;
 import com.basejava.webapp.model.Resume;
 
 import java.util.Arrays;
@@ -29,7 +30,7 @@ public abstract class AbstractArrayStorage implements Storage {
 
     public void save(Resume r) {
         if (count >= STORAGE_LIMIT) {
-            System.out.println("ERROR: Массив полон!");
+            throw new StorageOverflowException(r.getUuid());
         } else if (getIndex(r.getUuid()) >= 0) {
             throw new ExistStorageException(r.getUuid());
         } else {
