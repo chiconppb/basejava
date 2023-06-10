@@ -76,10 +76,7 @@ public abstract class AbstractArrayStorageTest {
 
     @Test
     public void getAll() {
-        Resume[] expected = new Resume[3];
-        expected[0] = RESUME_1;
-        expected[1] = RESUME_2;
-        expected[2] = RESUME_3;
+        Resume[] expected = new Resume[]{RESUME_1, RESUME_2, RESUME_3};
         Resume[] actual = storage.getAll();
         Assert.assertArrayEquals(expected, actual);
     }
@@ -96,16 +93,15 @@ public abstract class AbstractArrayStorageTest {
 
     @Test(expected = StorageOverflowException.class)
     public void saveOverflow() {
-        int storageLimit = AbstractArrayStorage.STORAGE_LIMIT;
         storage.clear();
         try {
-            for (int i = 1; i <= storageLimit; i++) {
+            for (int i = 1; i <= AbstractArrayStorage.STORAGE_LIMIT; i++) {
                 storage.save(new Resume("uuid" + i));
             }
         } catch (StorageOverflowException e) {
             Assert.fail("Array is overflowed before it's filled up");
         }
-        storage.save(new Resume("uuid" + (storageLimit + 1)));
+        storage.save(new Resume("uuid" + (AbstractArrayStorage.STORAGE_LIMIT + 1)));
     }
 
 
@@ -117,11 +113,11 @@ public abstract class AbstractArrayStorageTest {
         Assert.assertNotNull(storage.get(resume.getUuid()));
     }
 
-    public void updateNotExist(Resume resume){
+    public void updateNotExist(Resume resume) {
         storage.update(resume);
     }
 
-    public void deleteNotExist(String uuid){
+    public void deleteNotExist(String uuid) {
         storage.delete(UUID_NOT_EXIST);
     }
 }
