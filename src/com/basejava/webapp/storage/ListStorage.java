@@ -13,21 +13,20 @@ public class ListStorage extends AbstractStorage {
     @Override
     public void clear() {
         storage.clear();
-        storage.trimToSize();
     }
 
     @Override
     public void update(Resume r) {
-        int index = getIndex(r.getUuid());
-        if (index < 0) {
+        if(getIndex(r.getUuid())<0){
             throw new NotExistStorageException(r.getUuid());
         }
-        storage.add(index, r);
+        storage.add(getIndex(r.getUuid()), r);
     }
 
     @Override
     public void save(Resume r) {
-        if (getIndex(r.getUuid()) >= 0) {
+        int index = getIndex(r.getUuid());
+        if (index >= 0) {
             throw new ExistStorageException(r.getUuid());
         }
         storage.add(r);
@@ -35,27 +34,23 @@ public class ListStorage extends AbstractStorage {
 
     @Override
     public Resume get(String uuid) {
-        int index = getIndex(uuid);
-        if (index < 0) {
+        if(getIndex(uuid)<0){
             throw new NotExistStorageException(uuid);
         }
-        return storage.get(index);
+        return storage.get(getIndex(uuid));
     }
 
     @Override
     public void delete(String uuid) {
-        int index = getIndex(uuid);
-        if (index < 0) {
+        if(getIndex(uuid)<0){
             throw new NotExistStorageException(uuid);
         }
-        storage.remove(index);
-        storage.trimToSize();
+        deleteResume(getIndex(uuid));
     }
 
     @Override
     public Resume[] getAll() {
         return storage.toArray(new Resume[0]);
-
     }
 
     @Override
@@ -63,9 +58,17 @@ public class ListStorage extends AbstractStorage {
         return storage.size();
     }
 
-    private int getIndex(String uuid) {
-        Resume searchKey = new Resume(uuid);
-        return Collections.binarySearch(storage, searchKey);
+    protected int getIndex(String uuid) {
+        return Collections.binarySearch(storage, new Resume(uuid));
     }
+
+    protected void insertResume(Resume r, int index) {
+        storage.add(index, r);
+    }
+
+    protected void deleteResume(int index) {
+        storage.remove(index);
+    }
+
 }
 

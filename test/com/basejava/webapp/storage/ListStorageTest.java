@@ -7,9 +7,6 @@ public class ListStorageTest extends AbstractArrayStorageTest {
     public ListStorageTest() {
         super(new ListStorage());
     }
-
-   @Ignore @Test
-    public void saveOverflow() {
-    }
-
+    @Test @Ignore
+    public void saveOverflow(){}
 }
