@@ -2,50 +2,57 @@ package com.basejava.webapp.storage;
 
 import com.basejava.webapp.model.Resume;
 
+import java.util.Arrays;
+import java.util.HashMap;
+
 public class MapStorage extends AbstractStorage {
+    private final HashMap<String, Resume> storage = new HashMap<>();
 
     @Override
     public void clear() {
-    }
-
-    @Override
-    public void update(Resume r) {
-    }
-
-    @Override
-    public void save(Resume r) {
-    }
-
-    @Override
-    public Resume get(String uuid) {
-        return null;
-    }
-
-    @Override
-    public void delete(String uuid) {
-
+        storage.clear();
     }
 
     @Override
     public Resume[] getAll() {
-        return new Resume[0];
+        Resume[] allResumes = storage.values().toArray(new Resume[0]);
+        Arrays.sort(allResumes);
+        return allResumes;
     }
 
     @Override
     public int size() {
-        return 0;
+        return storage.size();
     }
 
     @Override
-    protected int getIndex(String uuid) {
-        return 0;
+    protected Object getSearchKey(String uuid) {
+        return uuid;
     }
 
     @Override
-    protected void insertResume(Resume r, int index) {
+    protected boolean isExist(Object o) {
+        return storage.containsKey((String) o);
     }
 
     @Override
-    protected void deleteResume(int index) {
+    public Resume doGet(String uuid) {
+        return storage.get(uuid);
+    }
+
+    @Override
+    public void doSave(Resume resume) {
+        storage.put(resume.getUuid(), resume);
+    }
+
+    @Override
+    public void doUpdate(Resume resume) {
+        storage.put(resume.getUuid(), resume);
+    }
+
+    @Override
+    public void doDelete(String uuid) {
+        storage.remove(uuid);
     }
 }
+

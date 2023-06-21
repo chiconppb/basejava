@@ -1,51 +1,15 @@
 package com.basejava.webapp.storage;
 
-import com.basejava.webapp.exception.ExistStorageException;
-import com.basejava.webapp.exception.NotExistStorageException;
 import com.basejava.webapp.model.Resume;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 public class ListStorage extends AbstractStorage {
-    protected ArrayList<Resume> storage = new ArrayList<>();
+    private final ArrayList<Resume> storage = new ArrayList<>();
 
     @Override
     public void clear() {
         storage.clear();
-    }
-
-    @Override
-    public void update(Resume r) {
-        if(getIndex(r.getUuid())<0){
-            throw new NotExistStorageException(r.getUuid());
-        }
-        storage.add(getIndex(r.getUuid()), r);
-    }
-
-    @Override
-    public void save(Resume r) {
-        int index = getIndex(r.getUuid());
-        if (index >= 0) {
-            throw new ExistStorageException(r.getUuid());
-        }
-        storage.add(r);
-    }
-
-    @Override
-    public Resume get(String uuid) {
-        if(getIndex(uuid)<0){
-            throw new NotExistStorageException(uuid);
-        }
-        return storage.get(getIndex(uuid));
-    }
-
-    @Override
-    public void delete(String uuid) {
-        if(getIndex(uuid)<0){
-            throw new NotExistStorageException(uuid);
-        }
-        deleteResume(getIndex(uuid));
     }
 
     @Override
@@ -58,17 +22,35 @@ public class ListStorage extends AbstractStorage {
         return storage.size();
     }
 
-    protected int getIndex(String uuid) {
-        return Collections.binarySearch(storage, new Resume(uuid));
+    @Override
+    protected Object getSearchKey(String uuid) {
+        return storage.indexOf(new Resume(uuid));
     }
 
-    protected void insertResume(Resume r, int index) {
-        storage.add(index, r);
+    @Override
+    protected boolean isExist(Object o) {
+        return (int) o >= 0;
     }
 
-    protected void deleteResume(int index) {
-        storage.remove(index);
+    @Override
+    public Resume doGet(String uuid) {
+        return storage.get((int) getSearchKey(uuid));
     }
 
+    @Override
+    public void doSave(Resume resume) {
+        storage.add(resume);
+    }
+
+    @Override
+    public void doUpdate(Resume resume) {
+        storage.add((int) getSearchKey(resume.getUuid()), resume);
+    }
+
+    @Override
+    public void doDelete(String uuid) {
+        storage.remove((int) getSearchKey(uuid));
+
+    }
 }
 

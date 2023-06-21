@@ -1,7 +1,5 @@
 package com.basejava.webapp.storage;
 
-import com.basejava.webapp.exception.ExistStorageException;
-import com.basejava.webapp.exception.NotExistStorageException;
 import com.basejava.webapp.exception.StorageOverflowException;
 import com.basejava.webapp.model.Resume;
 
@@ -19,48 +17,6 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
         count = 0;
     }
 
-    public void update(Resume resume) {
-        int index = getIndex(resume.getUuid());
-        if (index >= 0) {
-            storage[index] = resume;
-            return;
-        }
-        throw new NotExistStorageException(resume.getUuid());
-    }
-
-    public void save(Resume r) {
-        if (count >= STORAGE_LIMIT) {
-            throw new StorageOverflowException(r.getUuid());
-        } else if (getIndex(r.getUuid()) >= 0) {
-            throw new ExistStorageException(r.getUuid());
-        } else {
-            int index = Math.abs(getIndex(r.getUuid()) + 1);
-            insertResume(r, index);
-            count++;
-        }
-    }
-
-    public Resume get(String uuid) {
-        int index = getIndex(uuid);
-        if (index >= 0) {
-            return storage[index];
-        }
-        throw new NotExistStorageException(uuid);
-    }
-
-    public void delete(String uuid) {
-        int index = getIndex(uuid);
-        if (index < 0) {
-            throw new NotExistStorageException(uuid);
-        } else {
-            deleteResume(index);
-            count--;
-        }
-    }
-
-    /**
-     * @return array, contains only Resumes in storage (without null)
-     */
     public Resume[] getAll() {
         return Arrays.copyOf(storage, count);
     }
@@ -69,6 +25,40 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
         return count;
     }
 
+    protected boolean isExist(Object o) {
+        return (int) o >= 0;
+    }
 
+    public Resume doGet(String uuid) {
+        int index = (int) getSearchKey(uuid);
+        return storage[index];
+    }
+
+    public void doSave(Resume resume) {
+        if (count >= STORAGE_LIMIT) {
+            throw new StorageOverflowException(resume.getUuid());
+        } else {
+            int index = Math.abs((int) getSearchKey(resume.getUuid()) + 1);
+            insertResume(resume, index);
+            count++;
+        }
+    }
+
+    public void doUpdate(Resume resume) {
+        int index = (int) getSearchKey(resume.getUuid());
+        storage[index] = resume;
+    }
+
+    public void doDelete(String uuid) {
+        int index = (int) getSearchKey(uuid);
+        deleteResume(index);
+        count--;
+    }
+
+    protected abstract void insertResume(Resume r, int index);
+
+    protected abstract void deleteResume(int index);
+
+    protected abstract Object getSearchKey(String uuid);
 
 }
