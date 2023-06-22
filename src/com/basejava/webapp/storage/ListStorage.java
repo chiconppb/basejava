@@ -33,23 +33,23 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
-    public Resume doGet(String uuid) {
-        return storage.get((int) getSearchKey(uuid));
+    public Resume doGet(Object searchKey) {
+        return storage.get((int)searchKey);
     }
 
     @Override
-    public void doSave(Resume resume) {
+    public void doSave(Object searchKey, Resume resume) {
         storage.add(resume);
     }
 
     @Override
-    public void doUpdate(Resume resume) {
-        storage.add((int) getSearchKey(resume.getUuid()), resume);
+    public void doUpdate(Object searchKey, Resume resume) {
+        storage.add((int)searchKey, resume);
     }
 
     @Override
-    public void doDelete(String uuid) {
-        storage.remove((int) getSearchKey(uuid));
+    public void doDelete(Object searchKey) {
+        storage.remove((int)searchKey);
 
     }
 }

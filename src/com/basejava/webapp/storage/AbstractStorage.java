@@ -7,44 +7,46 @@ import com.basejava.webapp.model.Resume;
 public abstract class AbstractStorage implements Storage {
 
     public Resume get(String uuid) {
-        if (!isExist(getSearchKey(uuid))) {
-            throw new NotExistStorageException(uuid);
-        }
-        return doGet(uuid);
+        return doGet(getExistingSearchKey(uuid));
     }
 
     public void save(Resume resume) {
-        if (isExist(getSearchKey(resume.getUuid()))) {
-            throw new ExistStorageException(resume.getUuid());
-        }
-        doSave(resume);
+        doSave(getNotExistingSearchKey(resume.getUuid()), resume);
     }
 
     public void update(Resume resume) {
-        if (!isExist(getSearchKey(resume.getUuid()))) {
-            throw new NotExistStorageException(resume.getUuid());
-        }
-        doUpdate(resume);
+        doUpdate(getExistingSearchKey(resume.getUuid()), resume);
     }
 
     public void delete(String uuid) {
+        doDelete(getExistingSearchKey(uuid));
+    }
+
+    protected Object getExistingSearchKey(String uuid) {
         if (!isExist(getSearchKey(uuid))) {
             throw new NotExistStorageException(uuid);
         }
-        doDelete(uuid);
+        return getSearchKey(uuid);
+    }
+
+    protected Object getNotExistingSearchKey(String uuid) {
+        if (isExist(getSearchKey(uuid))) {
+            throw new ExistStorageException(uuid);
+        }
+        return getSearchKey(uuid);
     }
 
     protected abstract Object getSearchKey(String uuid);
 
     protected abstract boolean isExist(Object o);
 
-    public abstract Resume doGet(String uuid);
+    public abstract Resume doGet(Object searchKey);
 
-    public abstract void doSave(Resume resume);
+    public abstract void doSave(Object searchKey, Resume resume);
 
-    public abstract void doUpdate(Resume resume);
+    public abstract void doUpdate(Object searchKey, Resume resume);
 
-    public abstract void doDelete(String uuid);
+    public abstract void doDelete(Object searchKey);
 
 
 }

@@ -29,29 +29,26 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
         return (int) o >= 0;
     }
 
-    public Resume doGet(String uuid) {
-        int index = (int) getSearchKey(uuid);
-        return storage[index];
+    public Resume doGet(Object searchKey) {
+        return storage[(int)searchKey];
     }
 
-    public void doSave(Resume resume) {
+    public void doSave(Object searchKey, Resume resume) {
         if (count >= STORAGE_LIMIT) {
             throw new StorageOverflowException(resume.getUuid());
         } else {
-            int index = Math.abs((int) getSearchKey(resume.getUuid()) + 1);
+            int index = Math.abs(((int)searchKey) + 1);
             insertResume(resume, index);
             count++;
         }
     }
 
-    public void doUpdate(Resume resume) {
-        int index = (int) getSearchKey(resume.getUuid());
-        storage[index] = resume;
+    public void doUpdate(Object searchKey, Resume resume) {
+        storage[(int)searchKey] = resume;
     }
 
-    public void doDelete(String uuid) {
-        int index = (int) getSearchKey(uuid);
-        deleteResume(index);
+    public void doDelete(Object searchKey) {
+        deleteResume((int)searchKey);
         count--;
     }
 

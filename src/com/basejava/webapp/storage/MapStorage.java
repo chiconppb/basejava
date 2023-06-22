@@ -36,23 +36,23 @@ public class MapStorage extends AbstractStorage {
     }
 
     @Override
-    public Resume doGet(String uuid) {
-        return storage.get(uuid);
+    public Resume doGet(Object searchKey) {
+        return storage.get((String) searchKey);
     }
 
     @Override
-    public void doSave(Resume resume) {
+    public void doSave(Object searchKey, Resume resume) {
         storage.put(resume.getUuid(), resume);
     }
 
     @Override
-    public void doUpdate(Resume resume) {
+    public void doUpdate(Object searchKey, Resume resume) {
         storage.put(resume.getUuid(), resume);
     }
 
     @Override
-    public void doDelete(String uuid) {
-        storage.remove(uuid);
+    public void doDelete(Object searchKey) {
+        storage.remove((String) searchKey);
     }
 }
 
