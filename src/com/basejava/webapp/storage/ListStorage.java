@@ -3,9 +3,10 @@ package com.basejava.webapp.storage;
 import com.basejava.webapp.model.Resume;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ListStorage extends AbstractStorage {
-    private final ArrayList<Resume> storage = new ArrayList<>();
+    private final List<Resume> storage = new ArrayList<>();
 
     @Override
     public void clear() {
@@ -23,22 +24,22 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
-    protected Object getSearchKey(String uuid) {
+    protected Integer getSearchKey(String uuid) {
         for(int i=0; i<storage.size(); i++){
-            if(storage.get(i).equals(new Resume(uuid))){
+            if(storage.get(i).getUuid().equals(uuid)){
                 return i;
             }
-        } return -1;
+        } return null;
     }
 
     @Override
     protected boolean isExist(Object o) {
-        return (int) o >= 0;
+        return o!=null;
     }
 
     @Override
     public Resume doGet(Object searchKey) {
-        return storage.get((int) searchKey);
+        return storage.get((Integer) searchKey);
     }
 
     @Override
@@ -48,12 +49,12 @@ public class ListStorage extends AbstractStorage {
 
     @Override
     public void doUpdate(Object searchKey, Resume resume) {
-        storage.add((int) searchKey, resume);
+        storage.set((Integer) searchKey, resume);
     }
 
     @Override
     public void doDelete(Object searchKey) {
-        storage.remove((int) searchKey);
+        storage.remove(((Integer) searchKey).intValue());
 
     }
 }
