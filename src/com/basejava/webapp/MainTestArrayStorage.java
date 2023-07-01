@@ -1,5 +1,6 @@
 package com.basejava.webapp;
 
+import com.basejava.webapp.exception.NotExistStorageException;
 import com.basejava.webapp.model.Resume;
 import com.basejava.webapp.storage.ArrayStorage;
 import com.basejava.webapp.storage.Storage;
@@ -22,7 +23,12 @@ public class MainTestArrayStorage {
         System.out.println("Get r1: " + ARRAY_STORAGE.get(r1.getUuid()));
         System.out.println("Size: " + ARRAY_STORAGE.size());
 
-        System.out.println("Get dummy: " + ARRAY_STORAGE.get("dummy"));
+        try {
+            System.out.println("Get dummy: " + ARRAY_STORAGE.get("dummy"));
+        }catch (NotExistStorageException e){
+            System.out.println("Resume <<Dummy>> is not exist");
+        }
+
 
         printAll();
         ARRAY_STORAGE.delete(r1.getUuid());
@@ -35,7 +41,7 @@ public class MainTestArrayStorage {
 
     static void printAll() {
         System.out.println("\nGet All");
-        for (Resume r : ARRAY_STORAGE.getAll()) {
+        for (Resume r : ARRAY_STORAGE.getAllSorted()) {
             System.out.println(r);
         }
     }

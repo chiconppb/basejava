@@ -4,6 +4,7 @@ import com.basejava.webapp.exception.StorageOverflowException;
 import com.basejava.webapp.model.Resume;
 
 import java.util.Arrays;
+import java.util.List;
 
 public abstract class AbstractArrayStorage extends AbstractStorage {
 
@@ -12,13 +13,16 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     protected final Resume[] storage = new Resume[STORAGE_LIMIT];
     protected int count;
 
+
     public void clear() {
         Arrays.fill(storage, 0, count, null);
         count = 0;
     }
 
-    public Resume[] getAll() {
-        return Arrays.copyOf(storage, count);
+    public List<Resume> getAllSorted() {
+        Resume[] actualArray = Arrays.copyOf(storage, count);
+        Arrays.sort(actualArray, RESUME_UUID_COMPARATOR);
+        return Arrays.asList(actualArray);
     }
 
     public int size() {
@@ -30,25 +34,25 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     }
 
     public Resume doGet(Object searchKey) {
-        return storage[(Integer)searchKey];
+        return storage[(Integer) searchKey];
     }
 
     public void doSave(Object searchKey, Resume resume) {
         if (count >= STORAGE_LIMIT) {
             throw new StorageOverflowException(resume.getUuid());
         } else {
-            int index = Math.abs(((Integer)searchKey) + 1);
+            int index = Math.abs(((Integer) searchKey) + 1);
             insertResume(resume, index);
             count++;
         }
     }
 
     public void doUpdate(Object searchKey, Resume resume) {
-        storage[(Integer)searchKey] = resume;
+        storage[(Integer) searchKey] = resume;
     }
 
     public void doDelete(Object searchKey) {
-        deleteResume((Integer)searchKey);
+        deleteResume((Integer) searchKey);
         count--;
     }
 
