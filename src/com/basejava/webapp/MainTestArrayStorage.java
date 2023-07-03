@@ -25,7 +25,7 @@ public class MainTestArrayStorage {
 
         try {
             System.out.println("Get dummy: " + ARRAY_STORAGE.get("dummy"));
-        }catch (NotExistStorageException e){
+        } catch (NotExistStorageException e) {
             System.out.println("Resume <<Dummy>> is not exist");
         }
 

@@ -39,7 +39,7 @@ public class Resume implements Comparable<Resume> {
 
     @Override
     public String toString() {
-        return "UUID = " + uuid + ", " + "Full name = " + fullName;
+        return "UUID = " + uuid + ", " + "FullName = " + fullName;
     }
 
     @Override
