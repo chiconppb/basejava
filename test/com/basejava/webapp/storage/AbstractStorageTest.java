@@ -75,7 +75,6 @@ public abstract class AbstractStorageTest {
         assertGet(RESUME_2);
         assertGet(RESUME_3);
         assertGet(SAME_NAME_RESUME);
-        ;
     }
 
     @Test
