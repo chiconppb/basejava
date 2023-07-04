@@ -45,13 +45,11 @@ public abstract class AbstractStorage implements Storage {
 
     protected abstract boolean isExist(Object o);
 
-    public abstract Resume doGet(Object searchKey);
+    protected abstract Resume doGet(Object searchKey);
 
-    public abstract void doSave(Object searchKey, Resume resume);
+    protected abstract void doSave(Object searchKey, Resume resume);
 
-    public abstract void doUpdate(Object searchKey, Resume resume);
+    protected abstract void doUpdate(Object searchKey, Resume resume);
 
-    public abstract void doDelete(Object searchKey);
-
-
+    protected abstract void doDelete(Object searchKey);
 }

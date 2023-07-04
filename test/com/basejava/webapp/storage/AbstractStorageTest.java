@@ -74,6 +74,8 @@ public abstract class AbstractStorageTest {
         assertGet(RESUME_1);
         assertGet(RESUME_2);
         assertGet(RESUME_3);
+        assertGet(SAME_NAME_RESUME);
+        ;
     }
 
     @Test
@@ -84,7 +86,7 @@ public abstract class AbstractStorageTest {
 
     @Test
     public void getAll() {
-        Resume[] expected = new Resume[]{RESUME_1, RESUME_2, RESUME_3, SAME_NAME_RESUME};
+        Resume[] expected = new Resume[]{RESUME_1, SAME_NAME_RESUME, RESUME_2, RESUME_3};
         List<Resume> resumes = storage.getAllSorted();
         Resume[] actualResumes = resumes.toArray(new Resume[0]);
         Assert.assertArrayEquals(expected, actualResumes);

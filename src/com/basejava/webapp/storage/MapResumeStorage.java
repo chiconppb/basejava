@@ -14,9 +14,7 @@ public class MapResumeStorage extends AbstractStorage {
 
     @Override
     public List<Resume> getAllSorted() {
-        List<Resume> allResumes = new ArrayList<>(storage.values());
-        allResumes.sort(RESUME_FULLNAME_COMPARATOR);
-        return allResumes;
+        return storage.values().stream().sorted(RESUME_FULLNAME_COMPARATOR).toList();
     }
 
     @Override
@@ -26,27 +24,33 @@ public class MapResumeStorage extends AbstractStorage {
 
     @Override
     protected Resume getSearchKey(String uuid) {
+        return storage.get(uuid);
     }
 
     @Override
     protected boolean isExist(Object searchKey) {
+        return searchKey != null;
     }
 
     @Override
     public Resume doGet(Object existSearchKey) {
+        return storage.get(((Resume) existSearchKey).getUuid());
     }
 
     @Override
     public void doSave(Object notExistSearchKey, Resume resume) {
+        storage.put(resume.getUuid(), resume);
     }
 
     @Override
     public void doUpdate(Object existSearchKey, Resume resume) {
+        storage.put(((Resume) existSearchKey).getUuid(), resume);
 
     }
 
     @Override
     public void doDelete(Object existSearchKey) {
+        storage.remove(((Resume) existSearchKey).getUuid());
     }
 
 }
