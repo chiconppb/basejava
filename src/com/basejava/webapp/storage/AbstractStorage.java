@@ -5,6 +5,7 @@ import com.basejava.webapp.exception.NotExistStorageException;
 import com.basejava.webapp.model.Resume;
 
 import java.util.Comparator;
+import java.util.List;
 
 public abstract class AbstractStorage implements Storage {
 
@@ -12,6 +13,12 @@ public abstract class AbstractStorage implements Storage {
 
     public Resume get(String uuid) {
         return doGet(getExistingSearchKey(uuid));
+    }
+
+    public List<Resume> getAllSorted(){
+        List<Resume> allResumes = doCopyAll();
+        allResumes.sort(RESUME_COMPARATOR);
+        return allResumes;
     }
 
     public void save(Resume resume) {
@@ -51,4 +58,6 @@ public abstract class AbstractStorage implements Storage {
     protected abstract void doUpdate(Object searchKey, Resume resume);
 
     protected abstract void doDelete(Object searchKey);
+
+    protected abstract List<Resume> doCopyAll();
 }

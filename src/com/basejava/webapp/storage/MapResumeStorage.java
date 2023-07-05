@@ -13,11 +13,6 @@ public class MapResumeStorage extends AbstractStorage {
     }
 
     @Override
-    public List<Resume> getAllSorted() {
-        return storage.values().stream().sorted(RESUME_COMPARATOR).toList();
-    }
-
-    @Override
     public int size() {
         return storage.size();
     }
@@ -51,6 +46,10 @@ public class MapResumeStorage extends AbstractStorage {
     @Override
     public void doDelete(Object existSearchKey) {
         storage.remove(((Resume) existSearchKey).getUuid());
+    }
+
+    protected List<Resume> doCopyAll() {
+        return new ArrayList<>(storage.values());
     }
 
 }
