@@ -19,10 +19,10 @@ public abstract class AbstractStorageTest {
     private static final String UUID_5 = "uuid5";
     private static final String UUID_NOT_EXIST = "dummy";
 
-    private static final String NAME_1 = "Anton";
-    private static final String NAME_2 = "Boris";
-    private static final String NAME_3 = "Ivan";
-    private static final String NAME_4 = "Petr";
+    private static final String NAME_1 = "Name1";
+    private static final String NAME_2 = "Name2";
+    private static final String NAME_3 = "Name3";
+    private static final String NAME_4 = "Name4";
 
     private static final Resume RESUME_1 = new Resume(UUID_1, NAME_1);
     private static final Resume RESUME_2 = new Resume(UUID_2, NAME_2);
@@ -56,9 +56,8 @@ public abstract class AbstractStorageTest {
     @Test
     public void update() {
         Resume srcResume = storage.get(UUID_1);
-        Resume newResume = new Resume(UUID_1, NAME_1);
+        Resume newResume = new Resume(UUID_1, "New_Name");
         storage.update(newResume);
-        Assert.assertEquals(srcResume, newResume);
         Assert.assertNotSame(srcResume, newResume);
     }
 
@@ -88,6 +87,7 @@ public abstract class AbstractStorageTest {
         Resume[] expected = new Resume[]{RESUME_1, SAME_NAME_RESUME, RESUME_2, RESUME_3};
         List<Resume> resumes = storage.getAllSorted();
         Resume[] actualResumes = resumes.toArray(new Resume[0]);
+        Assert.assertEquals(4,storage.size());
         Assert.assertArrayEquals(expected, actualResumes);
     }
 

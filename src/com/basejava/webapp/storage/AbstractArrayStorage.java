@@ -3,7 +3,6 @@ package com.basejava.webapp.storage;
 import com.basejava.webapp.exception.StorageOverflowException;
 import com.basejava.webapp.model.Resume;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -47,11 +46,12 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
 
     public void doDelete(Object searchKey) {
         deleteResume((Integer) searchKey);
+        storage[count-1]=null;
         count--;
     }
 
     protected List<Resume> doCopyAll() {
-        return new ArrayList<>(Arrays.asList(storage).subList(0, count));
+        return Arrays.asList(Arrays.copyOfRange(storage,0,count));
     }
 
     protected abstract void insertResume(Resume r, Integer index);

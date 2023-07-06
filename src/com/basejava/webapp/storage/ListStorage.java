@@ -55,7 +55,7 @@ public class ListStorage extends AbstractStorage {
     }
 
     protected List<Resume> doCopyAll() {
-        return storage;
+        return new ArrayList<>(storage);
     }
 
     ;
