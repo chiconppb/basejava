@@ -4,7 +4,7 @@ import com.basejava.webapp.model.Resume;
 
 import java.util.*;
 
-public class MapUuidStorage extends AbstractStorage {
+public class MapUuidStorage extends AbstractStorage<String> {
     private final Map<String, Resume> storage = new HashMap<>();
 
     @Override
@@ -23,28 +23,28 @@ public class MapUuidStorage extends AbstractStorage {
     }
 
     @Override
-    protected boolean isExist(Object o) {
-        return storage.containsKey((String) o);
+    protected boolean isExist(String o) {
+        return storage.containsKey(o);
     }
 
     @Override
-    public Resume doGet(Object searchKey) {
-        return storage.get((String) searchKey);
+    public Resume doGet(String searchKey) {
+        return storage.get(searchKey);
     }
 
     @Override
-    public void doSave(Object searchKey, Resume resume) {
+    public void doSave(String searchKey, Resume resume) {
         storage.put(resume.getUuid(), resume);
     }
 
     @Override
-    public void doUpdate(Object searchKey, Resume resume) {
+    public void doUpdate(String searchKey, Resume resume) {
         storage.put(resume.getUuid(), resume);
     }
 
     @Override
-    public void doDelete(Object searchKey) {
-        storage.remove((String) searchKey);
+    public void doDelete(String searchKey) {
+        storage.remove(searchKey);
     }
 
     protected List<Resume> doCopyAll() {

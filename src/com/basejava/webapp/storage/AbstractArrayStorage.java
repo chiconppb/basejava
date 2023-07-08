@@ -6,7 +6,7 @@ import com.basejava.webapp.model.Resume;
 import java.util.Arrays;
 import java.util.List;
 
-public abstract class AbstractArrayStorage extends AbstractStorage {
+public abstract class AbstractArrayStorage extends AbstractStorage<Integer> {
 
     protected static final int STORAGE_LIMIT = 10000;
 
@@ -22,42 +22,42 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
         return count;
     }
 
-    protected boolean isExist(Object o) {
-        return (Integer) o >= 0;
+    protected boolean isExist(Integer o) {
+        return o >= 0;
     }
 
-    public Resume doGet(Object searchKey) {
-        return storage[(Integer) searchKey];
+    public Resume doGet(Integer searchKey) {
+        return storage[searchKey];
     }
 
-    public void doSave(Object searchKey, Resume resume) {
+    public void doSave(Integer searchKey, Resume resume) {
         if (count >= STORAGE_LIMIT) {
             throw new StorageOverflowException(resume.getUuid());
         } else {
-            int index = Math.abs(((Integer) searchKey) + 1);
+            int index = Math.abs(searchKey + 1);
             insertResume(resume, index);
             count++;
         }
     }
 
-    public void doUpdate(Object searchKey, Resume resume) {
-        storage[(Integer) searchKey] = resume;
+    public void doUpdate(Integer searchKey, Resume resume) {
+        storage[searchKey] = resume;
     }
 
-    public void doDelete(Object searchKey) {
-        deleteResume((Integer) searchKey);
-        storage[count-1]=null;
+    public void doDelete(Integer searchKey) {
+        deleteResume(searchKey);
+        storage[count - 1] = null;
         count--;
     }
 
     protected List<Resume> doCopyAll() {
-        return Arrays.asList(Arrays.copyOfRange(storage,0,count));
+        return Arrays.asList(Arrays.copyOfRange(storage, 0, count));
     }
 
     protected abstract void insertResume(Resume r, Integer index);
 
     protected abstract void deleteResume(Integer index);
 
-    protected abstract Object getSearchKey(String uuid);
+    protected abstract Integer getSearchKey(String uuid);
 
 }

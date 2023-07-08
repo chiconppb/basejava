@@ -7,13 +7,13 @@ import com.basejava.webapp.model.Resume;
 import java.util.Collections;
 import java.util.List;
 
-public abstract class AbstractStorage implements Storage {
+public abstract class AbstractStorage<T> implements Storage {
 
     public Resume get(String uuid) {
         return doGet(getExistingSearchKey(uuid));
     }
 
-    public List<Resume> getAllSorted(){
+    public List<Resume> getAllSorted() {
         List<Resume> allResumes = doCopyAll();
         Collections.sort(allResumes);
         return allResumes;
@@ -31,31 +31,31 @@ public abstract class AbstractStorage implements Storage {
         doDelete(getExistingSearchKey(uuid));
     }
 
-    protected Object getExistingSearchKey(String uuid) {
+    protected T getExistingSearchKey(String uuid) {
         if (!isExist(getSearchKey(uuid))) {
             throw new NotExistStorageException(uuid);
         }
         return getSearchKey(uuid);
     }
 
-    protected Object getNotExistingSearchKey(String uuid) {
+    protected T getNotExistingSearchKey(String uuid) {
         if (isExist(getSearchKey(uuid))) {
             throw new ExistStorageException(uuid);
         }
         return getSearchKey(uuid);
     }
 
-    protected abstract Object getSearchKey(String uuid);
+    protected abstract T getSearchKey(String uuid);
 
-    protected abstract boolean isExist(Object o);
+    protected abstract boolean isExist(T o);
 
-    protected abstract Resume doGet(Object searchKey);
+    protected abstract Resume doGet(T searchKey);
 
-    protected abstract void doSave(Object searchKey, Resume resume);
+    protected abstract void doSave(T searchKey, Resume resume);
 
-    protected abstract void doUpdate(Object searchKey, Resume resume);
+    protected abstract void doUpdate(T searchKey, Resume resume);
 
-    protected abstract void doDelete(Object searchKey);
+    protected abstract void doDelete(T searchKey);
 
     protected abstract List<Resume> doCopyAll();
 }
