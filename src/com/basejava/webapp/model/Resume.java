@@ -1,16 +1,26 @@
 package com.basejava.webapp.model;
 
+import com.basejava.webapp.exception.NotExistContactException;
+import com.basejava.webapp.exception.NotExistSectionException;
+import com.basejava.webapp.storage.AbstractStorage;
+
+import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.logging.Logger;
 
 /**
  * Initial resume class
  */
 public class Resume implements Comparable<Resume> {
 
-    // Unique identifier
+    private static final Logger LOG = Logger.getLogger(AbstractStorage.class.getName());
+
     private final String uuid;
     private final String fullName;
+    private final EnumMap<ContactType, String> contacts = new EnumMap<>(ContactType.class);
+    private final ArrayList<AbstractSection> sections = new ArrayList<>();
 
     public Resume(String uuid, String fullName) {
         Objects.requireNonNull(uuid, "UUID must not be null");
@@ -22,6 +32,38 @@ public class Resume implements Comparable<Resume> {
     public Resume(String fullName) {
         uuid = UUID.randomUUID().toString();
         this.fullName = fullName;
+    }
+
+    public void addContact(ContactType contactType) {
+        Objects.requireNonNull(contactType, "Contact must not be null!");
+        LOG.info("Add contact:\n " + contactType + " = " + contactType.getTitle());
+        contacts.put(contactType, contactType.getTitle());
+    }
+
+    public String getContact(ContactType contactType) {
+        Objects.requireNonNull(contactType, "Contact type can't be null!");
+        if (!contacts.containsKey(contactType)) {
+            throw new NotExistContactException(contactType);
+        }
+        LOG.info("Get contact: \n " + contactType + " = " + contactType.getTitle());
+        return contacts.get(contactType);
+    }
+
+    public void addSection(AbstractSection section) {
+        Objects.requireNonNull(section, "Section must not be null!");
+        sections.add(section);
+    }
+
+    public AbstractSection getSection(SectionType sectionType) {
+        Objects.requireNonNull(sectionType, "Section type can't be null!");
+        for (AbstractSection section : sections) {
+            if (section.getTitle().equals(sectionType.getTitle())) {
+                LOG.info("Get section: \n" + section);
+                return section;
+            }
+        }
+        LOG.warning("Section " + sectionType.getTitle() + " is not exist!");
+        throw new NotExistSectionException(sectionType);
     }
 
     public String getUuid() {
