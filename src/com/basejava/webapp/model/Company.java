@@ -1,29 +1,28 @@
 package com.basejava.webapp.model;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class Company {
-    private final String name;
-    private final String website;
-    private final ArrayList<Period> periods = new ArrayList<>();
+    private final Link homepage;
+    private final List<Period> periods = new ArrayList<>();
 
 
     public Company(String name, String website, Period period) {
-        this.name = name;
-        this.website = website;
+        this.homepage = new Link(name,website);
         periods.add(period);
     }
 
     public String getName() {
-        return name;
+        return homepage.getName();
     }
 
     public String getWebsite() {
-        return website;
+        return homepage.getUrl();
     }
 
-    public ArrayList<Period> getPeriods() {
+    public List<Period> getPeriods() {
         return periods;
     }
 
@@ -33,12 +32,12 @@ public class Company {
         for (Period period : periods) {
             s.append(period);
         }
-        return "Company name: " + name + "\n Website: " + website + "\n " + s;
+        return "Company name: " + homepage.getName() + "\n Website: " + homepage.getUrl() + "\n " + s;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, website, periods);
+        return Objects.hash(homepage, periods);
     }
 
     @Override

@@ -35,8 +35,8 @@ public class ResumeTestData {
 
 
         //////////////////////// Add contacts to resume ////////////////////////
-        resume.addContact(ContactType.PHONE_NUMBER);
-        resume.addContact(ContactType.HOMEPAGE);
+        resume.addContact(ContactType.PHONE_NUMBER,  "911");
+        resume.addContact(ContactType.HOMEPAGE, "https://www.urise.com");
 
         resume.getContact(ContactType.PHONE_NUMBER);
         resume.getContact(ContactType.HOMEPAGE);
@@ -51,9 +51,9 @@ public class ResumeTestData {
         experience.addCompany(company_2);
 
         //////////////////////// Add sections to resume ////////////////////////
-        resume.addSection(personal);
-        resume.addSection(qualifications);
-        resume.addSection(experience);
+        resume.addSection(SectionType.PERSONAL, personal);
+        resume.addSection(SectionType.QUALIFICATIONS, qualifications);
+        resume.addSection(SectionType.EXPERIENCE, experience);
 
         //////////////////////// Get sections ////////////////////////
         resume.getSection(SectionType.PERSONAL);

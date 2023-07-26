@@ -1,29 +1,30 @@
 package com.basejava.webapp.model;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class ListSection extends AbstractSection {
     private final SectionType section;
-    private final ArrayList<String> strings = new ArrayList<>();
+    private final List<String> strings = new ArrayList<>();
 
 
     public ListSection(SectionType sectionType, String text) {
-        Objects.requireNonNull(sectionType);
-        Objects.requireNonNull(text);
+        Objects.requireNonNull(sectionType, "Section type can't be null!");
+        Objects.requireNonNull(text, "String type can't be null!");
         section = sectionType;
         strings.add(text);
     }
 
-    public String getTitle() {
-        return section.getTitle();
+    public SectionType getSectionType() {
+        return section;
     }
 
     public void addString(String string) {
         strings.add(string);
     }
 
-    public ArrayList<String> getStrings() {
+    public List<String> getStrings() {
         return strings;
     }
 
@@ -39,7 +40,7 @@ public class ListSection extends AbstractSection {
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.getTitle(), strings);
+        return Objects.hash(this.getSectionType().getTitle(), strings);
     }
 
     @Override
@@ -48,7 +49,7 @@ public class ListSection extends AbstractSection {
         if (o == null || getClass() != o.getClass()) return false;
 
         ListSection sectionType = (ListSection) o;
-        if (!(sectionType.getTitle().equals(this.getTitle()))) return false;
-        return sectionType.getTitle().equals(this.getTitle()) && sectionType.getStrings().equals(this.getStrings());
+        if (!(sectionType.getSectionType().getTitle().equals(this.getSectionType().getTitle()))) return false;
+        return sectionType.getSectionType().getTitle().equals(this.getSectionType().getTitle()) && sectionType.getStrings().equals(this.getStrings());
     }
 }

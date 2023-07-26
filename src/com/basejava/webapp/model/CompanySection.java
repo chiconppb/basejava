@@ -1,29 +1,30 @@
 package com.basejava.webapp.model;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class CompanySection extends AbstractSection {
     private final SectionType section;
-    private final ArrayList<Company> companies = new ArrayList<>();
+    private final List<Company> companies = new ArrayList<>();
 
     public CompanySection(SectionType sectionType, Company company) {
-        Objects.requireNonNull(sectionType);
-        Objects.requireNonNull(company);
+        Objects.requireNonNull(sectionType, "Section type can't be null!");
+        Objects.requireNonNull(company,"Company can't be null!");
         section = sectionType;
         companies.add(company);
     }
 
-    public void addCompany(Company company){
+    public void addCompany(Company company) {
         Objects.requireNonNull(company);
         companies.add(company);
     }
 
-    public String getTitle() {
-        return section.getTitle();
+    public SectionType getSectionType() {
+        return section;
     }
 
-    public ArrayList<Company> getAll() {
+    public List<Company> getAll() {
         return companies;
     }
 
@@ -34,7 +35,7 @@ public class CompanySection extends AbstractSection {
             s.append(com.toString());
             s.append("\n ");
         }
-        return " Section name: " + section.getTitle() + "\n Description: " + s;
+        return " Section name: " + section.getTitle() + "\n Description: \n " + s;
     }
 
     @Override
@@ -48,8 +49,8 @@ public class CompanySection extends AbstractSection {
         if (o == null || getClass() != o.getClass()) return false;
 
         CompanySection sectionType = (CompanySection) o;
-        if (!(sectionType.getTitle().equals(this.getTitle()))) return false;
-        return sectionType.getTitle().equals(this.getTitle()) && sectionType.getAll().equals(this.getAll());
+        if (!(sectionType.getSectionType().getTitle().equals(this.getSectionType().getTitle()))) return false;
+        return sectionType.getSectionType().getTitle().equals(this.getSectionType().getTitle()) && sectionType.getAll().equals(this.getAll());
     }
 
 }

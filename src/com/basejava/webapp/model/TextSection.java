@@ -11,8 +11,8 @@ public class TextSection extends AbstractSection {
         text = description;
     }
 
-    public String getTitle() {
-        return section.getTitle();
+    public SectionType getSectionType() {
+        return section;
     }
 
     public String getDescription() {
@@ -21,7 +21,7 @@ public class TextSection extends AbstractSection {
 
     @Override
     public String toString() {
-        return " Section name: " + this.getTitle() + "\n Description: " + text;
+        return " Section name: " + this.getSectionType().getTitle() + "\n Description: " + text;
     }
 
     @Override
@@ -36,8 +36,8 @@ public class TextSection extends AbstractSection {
 
         TextSection sectionType = (TextSection) o;
 
-        if (!(sectionType.getTitle().equals(this.getTitle()))) return false;
-        return sectionType.getTitle().equals(section.getTitle()) && sectionType.getDescription().equals(text);
+        if (!(sectionType.getSectionType().getTitle().equals(this.getSectionType().getTitle()))) return false;
+        return sectionType.getSectionType().getTitle().equals(section.getTitle()) && sectionType.getDescription().equals(text);
     }
 
 

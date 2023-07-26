@@ -1,13 +1,9 @@
 package com.basejava.webapp.model;
 
 import com.basejava.webapp.exception.NotExistContactException;
-import com.basejava.webapp.exception.NotExistSectionException;
 import com.basejava.webapp.storage.AbstractStorage;
 
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.logging.Logger;
 
 /**
@@ -19,8 +15,8 @@ public class Resume implements Comparable<Resume> {
 
     private final String uuid;
     private final String fullName;
-    private final EnumMap<ContactType, String> contacts = new EnumMap<>(ContactType.class);
-    private final ArrayList<AbstractSection> sections = new ArrayList<>();
+    private final Map<ContactType, String> contacts = new EnumMap<>(ContactType.class);
+    private final Map<SectionType, AbstractSection> sections = new EnumMap<>(SectionType.class);
 
     public Resume(String uuid, String fullName) {
         Objects.requireNonNull(uuid, "UUID must not be null");
@@ -34,10 +30,10 @@ public class Resume implements Comparable<Resume> {
         this.fullName = fullName;
     }
 
-    public void addContact(ContactType contactType) {
+    public void addContact(ContactType contactType, String contact) {
         Objects.requireNonNull(contactType, "Contact must not be null!");
-        LOG.info("Add contact:\n " + contactType + " = " + contactType.getTitle());
-        contacts.put(contactType, contactType.getTitle());
+        LOG.info("Add contact:\n " + contactType + " = " + contact);
+        contacts.put(contactType, contact);
     }
 
     public String getContact(ContactType contactType) {
@@ -45,25 +41,19 @@ public class Resume implements Comparable<Resume> {
         if (!contacts.containsKey(contactType)) {
             throw new NotExistContactException(contactType);
         }
-        LOG.info("Get contact: \n " + contactType + " = " + contactType.getTitle());
+        LOG.info("Get contact: \n " + contactType + " = " + contacts.get(contactType));
         return contacts.get(contactType);
     }
 
-    public void addSection(AbstractSection section) {
+    public void addSection(SectionType sectionType, AbstractSection section) {
         Objects.requireNonNull(section, "Section must not be null!");
-        sections.add(section);
+        LOG.info("\n Add section\n" + section);
+        sections.put(sectionType, section);
     }
 
     public AbstractSection getSection(SectionType sectionType) {
         Objects.requireNonNull(sectionType, "Section type can't be null!");
-        for (AbstractSection section : sections) {
-            if (section.getTitle().equals(sectionType.getTitle())) {
-                LOG.info("Get section: \n" + section);
-                return section;
-            }
-        }
-        LOG.warning("Section " + sectionType.getTitle() + " is not exist!");
-        throw new NotExistSectionException(sectionType);
+        return sections.get(sectionType);
     }
 
     public String getUuid() {
