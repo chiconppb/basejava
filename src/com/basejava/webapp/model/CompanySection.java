@@ -10,14 +10,22 @@ public class CompanySection extends AbstractSection {
 
     public CompanySection(SectionType sectionType, Company company) {
         Objects.requireNonNull(sectionType, "Section type can't be null!");
-        Objects.requireNonNull(company,"Company can't be null!");
+        Objects.requireNonNull(company, "Company can't be null!");
         section = sectionType;
         companies.add(company);
     }
 
     public void addCompany(Company company) {
         Objects.requireNonNull(company);
-        companies.add(company);
+        for (Company c : companies) {
+            if (c.getName().equals(company.getName())) {
+                for (int i = 0; i < company.getPeriods().size(); i++) {
+                    c.addPeriod(company.getPeriods().get(i));
+                }
+                return;
+            }
+            companies.add(company);
+        }
     }
 
     public SectionType getSectionType() {

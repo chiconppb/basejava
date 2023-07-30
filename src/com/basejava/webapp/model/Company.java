@@ -10,7 +10,7 @@ public class Company {
 
 
     public Company(String name, String website, Period period) {
-        this.homepage = new Link(name,website);
+        this.homepage = new Link(name, website);
         periods.add(period);
     }
 
@@ -24,6 +24,10 @@ public class Company {
 
     public List<Period> getPeriods() {
         return periods;
+    }
+
+    public void addPeriod(Period period) {
+        periods.add(period);
     }
 
     @Override
