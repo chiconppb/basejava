@@ -89,6 +89,7 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
     @Override
     public void clear() {
         File[] d = directory.listFiles();
+        Objects.requireNonNull(d);
         if (d.length == 0) {
             return;
         }

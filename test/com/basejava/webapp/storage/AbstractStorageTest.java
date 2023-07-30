@@ -1,5 +1,6 @@
 package com.basejava.webapp.storage;
 
+import com.basejava.webapp.ResumeTestData;
 import com.basejava.webapp.exception.ExistStorageException;
 import com.basejava.webapp.exception.NotExistStorageException;
 import com.basejava.webapp.model.Resume;
@@ -24,12 +25,12 @@ public abstract class AbstractStorageTest {
     private static final String NAME_3 = "Name3";
     private static final String NAME_4 = "Name4";
 
-    private static final Resume RESUME_1 = new Resume(UUID_1, NAME_1);
-    private static final Resume RESUME_2 = new Resume(UUID_2, NAME_2);
-    private static final Resume RESUME_3 = new Resume(UUID_3, NAME_3);
-    private static final Resume RESUME_4 = new Resume(UUID_4, NAME_4);
-    private static final Resume NOT_EXIST_UUID_RESUME = new Resume(UUID_NOT_EXIST);
-    private static final Resume SAME_NAME_RESUME = new Resume(UUID_5, NAME_1);
+    private static final Resume RESUME_1 = new ResumeTestData().getFilledResume(UUID_1, NAME_1);
+    private static final Resume RESUME_2 = new ResumeTestData().getFilledResume(UUID_2, NAME_2);
+    private static final Resume RESUME_3 = new ResumeTestData().getFilledResume(UUID_3, NAME_3);
+    private static final Resume RESUME_4 = new ResumeTestData().getFilledResume(UUID_4, NAME_4);
+    private static final Resume NOT_EXIST_UUID_RESUME = new ResumeTestData().getFilledResume(UUID_NOT_EXIST, UUID_NOT_EXIST);
+    private static final Resume SAME_NAME_RESUME = new ResumeTestData().getFilledResume(UUID_5, NAME_1);
 
     protected AbstractStorageTest(Storage s) {
         storage = s;
@@ -87,7 +88,7 @@ public abstract class AbstractStorageTest {
         Resume[] expected = new Resume[]{RESUME_1, SAME_NAME_RESUME, RESUME_2, RESUME_3};
         List<Resume> resumes = storage.getAllSorted();
         Resume[] actualResumes = resumes.toArray(new Resume[0]);
-        Assert.assertEquals(4,storage.size());
+        Assert.assertEquals(4, storage.size());
         Assert.assertArrayEquals(expected, actualResumes);
     }
 

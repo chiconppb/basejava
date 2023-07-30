@@ -17,15 +17,19 @@ public class CompanySection extends AbstractSection {
 
     public void addCompany(Company company) {
         Objects.requireNonNull(company);
-        for (Company c : companies) {
-            if (c.getName().equals(company.getName())) {
-                for (int i = 0; i < company.getPeriods().size(); i++) {
-                    c.addPeriod(company.getPeriods().get(i));
+        if (!companies.isEmpty()) {
+            for (int i = 0; i < companies.size(); i++) {
+                if (companies.get(i).getName().equals(company.getName())) {
+                    Company newCompany = companies.get(i);
+                    for (int j = 0; j < company.getPeriods().size(); j++) {
+                        newCompany.addPeriod(company.getPeriods().get(i));
+                    }
+                    companies.add(i, newCompany);
+                    return;
                 }
-                return;
             }
-            companies.add(company);
         }
+        companies.add(company);
     }
 
     public SectionType getSectionType() {
