@@ -74,37 +74,37 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
     protected List<Resume> doCopyAll() {
         List<Resume> allResumes = new ArrayList<>();
         File[] files = directory.listFiles();
-        if (files != null) {
-            for (File f : files) {
-                allResumes.add(doGet(f));
-            }
-            return allResumes;
+        if (files == null) {
+            throw new StorageException("I/O error", null);
         }
-        throw new StorageException("I/O error", null);
+        for (File f : files) {
+            allResumes.add(doGet(f));
+        }
+        return allResumes;
+
     }
 
     @Override
     public void clear() {
         File[] d = directory.listFiles();
-        if (d != null) {
-            if (d.length == 0) {
-                return;
-            }
-            for (int i = 0; i < size(); i++) {
-                doDelete(d[i]);
-            }
+        if (d == null) {
+            throw new StorageException("I/O error", null);
+        }
+        if (d.length == 0) {
             return;
         }
-        throw new StorageException("I/O error", null);
+        for (int i = 0; i < size(); i++) {
+            doDelete(d[i]);
+        }
     }
 
     @Override
     public int size() {
         File[] dir = directory.listFiles();
-        if (dir != null) {
-            return dir.length;
+        if (dir == null) {
+            throw new StorageException("I/O error", null);
         }
-        throw new StorageException("I/O error", null);
+        return dir.length;
     }
 
     protected abstract Resume doRead(File file) throws IOException;
