@@ -21,7 +21,7 @@ public class Link {
     }
 
     public String toString() {
-        return "Link(" + name + ',' + url + ')';
+        return name + ", " + url + ')';
     }
 
     @Override

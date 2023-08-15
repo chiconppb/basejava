@@ -2,7 +2,6 @@ package com.basejava.webapp;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
 
 public class MainFile {
     public static void main(String[] args) throws IOException {
@@ -17,33 +16,21 @@ public class MainFile {
             }
         }
 
-
-        /////////////////////////   HW8   /////////////////////////
-        MainFile m = new MainFile();
-        m.allFiles();
+        printDeepDirectory(dir);
     }
 
-    private void allFiles() throws IOException {
-        List<String> list = new ArrayList<>();
-        Queue<File> queue = new ArrayDeque<>();
-        File root = new File("..\\basejava");
-        queue.add(root);
-        while (!queue.isEmpty()) {
-            File currentFile = queue.poll();
-            Objects.requireNonNull(currentFile);
-            if (currentFile.isDirectory()) {
-                File[] files = currentFile.listFiles();
-                Objects.requireNonNull(files);
-                for (File file : files) {
-                    if (file.isDirectory()) {
-                        queue.add(file);
-                    }
-                    list.add(file.getCanonicalPath());
+    private static void printDeepDirectory(File dir) {
+        File[] files = dir.listFiles();
+        if (files != null) {
+            for (File file : files) {
+                if (file.isFile()) {
+                    System.out.println("File: " + file.getName());
+                } else if (file.isDirectory()) {
+                    System.out.println("Directory: " + file.getName());
+                    printDeepDirectory(file);
                 }
             }
         }
-        for (String s : list) {
-            System.out.println(s);
-        }
     }
 }
+

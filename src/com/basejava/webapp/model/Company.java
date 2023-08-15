@@ -1,17 +1,25 @@
 package com.basejava.webapp.model;
 
-import java.util.ArrayList;
+import java.time.LocalDate;
+import java.time.Month;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+import static com.basejava.webapp.util.DateUtil.NOW;
+import static com.basejava.webapp.util.DateUtil.of;
+
 public class Company {
     private final Link homepage;
-    private final List<Period> periods = new ArrayList<>();
+    private final List<Period> periods;
 
+    public Company(String name, String website, Period... periods) {
+        this(new Link(name, website), Arrays.asList(periods));
+    }
 
-    public Company(String name, String website, Period period) {
-        this.homepage = new Link(name, website);
-        periods.add(period);
+    public Company(Link homepage, List<Period> periods) {
+        this.homepage = homepage;
+        this.periods = periods;
     }
 
     public String getName() {
@@ -32,11 +40,7 @@ public class Company {
 
     @Override
     public String toString() {
-        StringBuilder s = new StringBuilder();
-        for (Period period : periods) {
-            s.append(period);
-        }
-        return "Company name: " + homepage.getName() + "\n Website: " + homepage.getUrl() + "\n " + s;
+        return "Company (" + homepage + ", " + periods + ')';
     }
 
     @Override
@@ -52,5 +56,85 @@ public class Company {
         Company company = (Company) o;
 
         return company.getName().equals(this.getName()) && company.getPeriods().equals(this.getPeriods()) && company.getWebsite().equals(this.getWebsite());
+    }
+
+    public static class Period {
+        private final String title;
+        private final String description;
+        private final LocalDate beginDate;
+        private final LocalDate endDate;
+
+        public Period(int startYear, Month startMonth, String title, String description) {
+            this(of(startYear, startMonth), NOW, title, description);
+        }
+
+        public Period(int startYear, Month startMonth, int endYear, Month endMonth, String title, String description) {
+            this(of(startYear, startMonth), of(endYear, endMonth), title, description);
+        }
+
+        public Period(LocalDate startDate, LocalDate endDate, String title, String description) {
+            Objects.requireNonNull(startDate, "startDate must not be null");
+            Objects.requireNonNull(endDate, "endDate must not be null");
+            Objects.requireNonNull(title, "title must not be null");
+            this.beginDate = startDate;
+            this.endDate = endDate;
+            this.title = title;
+            this.description = description;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+
+        public LocalDate getBeginDate() {
+            return beginDate;
+        }
+
+        public LocalDate getEndDate() {
+            return endDate;
+        }
+
+        @Override
+        public String toString() {
+            StringBuilder s = new StringBuilder();
+            s.append("Post: ");
+            s.append(title);
+            s.append("]\n Period: ");
+            s.append(beginDate.getYear());
+            s.append("/");
+            s.append(beginDate.getMonthValue());
+            s.append(" - ");
+            if (endDate.getYear() <= NOW.getYear() && endDate.getMonthValue() <= NOW.getMonthValue()) {
+                s.append("Until now");
+            } else {
+                s.append(endDate.getYear());
+                s.append("/");
+                s.append(endDate.getMonthValue());
+            }
+            s.append("\n Description: ");
+            s.append(description);
+
+            return s.toString();
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(title, description, beginDate, endDate);
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            Period period = (Period) o;
+
+            if (!period.getTitle().equals(title)) return false;
+            return period.getTitle().equals(this.getTitle()) && period.getDescription().equals(this.getDescription()) && period.getBeginDate().equals(this.getEndDate()) && period.getEndDate().equals(this.getEndDate());
+        }
     }
 }
