@@ -3,15 +3,23 @@ package com.basejava.webapp.model;
 import com.basejava.webapp.exception.NotExistContactException;
 import com.basejava.webapp.storage.AbstractStorage;
 
-import java.util.*;
+import java.io.Serial;
+import java.io.Serializable;
+import java.util.EnumMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 /**
  * Initial resume class
  */
-public class Resume implements Comparable<Resume> {
+public class Resume implements Comparable<Resume>, Serializable {
 
     private static final Logger LOG = Logger.getLogger(AbstractStorage.class.getName());
+
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     private final String uuid;
     private final String fullName;

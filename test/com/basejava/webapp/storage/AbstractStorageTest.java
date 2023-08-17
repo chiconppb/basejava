@@ -8,9 +8,12 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.File;
 import java.util.List;
 
 public abstract class AbstractStorageTest {
+
+    protected static final File STORAGE_DIR = new File("C:\\Users\\CHICO\\Desktop\\lessons\\basejava\\storage");
     protected final Storage storage;
 
     private static final String UUID_1 = "uuid1";
@@ -77,10 +80,11 @@ public abstract class AbstractStorageTest {
         assertGet(SAME_NAME_RESUME);
     }
 
-    @Test
+    @Test(expected = NotExistStorageException.class)
     public void delete() {
         storage.delete(UUID_2);
         assertSize(3);
+        storage.get(UUID_2);
     }
 
     @Test

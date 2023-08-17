@@ -1,10 +1,14 @@
 package com.basejava.webapp.model;
 
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 public class CompanySection extends AbstractSection {
+    @Serial
+    private static final long serialVersionUID = 1L;
+
     private final SectionType section;
     private final List<Company> companies = new ArrayList<>();
 
