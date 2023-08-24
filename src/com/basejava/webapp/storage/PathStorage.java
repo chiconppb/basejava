@@ -28,7 +28,7 @@ public class PathStorage extends AbstractStorage<Path> {
 
     @Override
     protected Path getSearchKey(String uuid) {
-        return Paths.get(String.valueOf(directory), uuid);
+        return directory.resolve(uuid);
     }
 
     @Override
@@ -49,7 +49,6 @@ public class PathStorage extends AbstractStorage<Path> {
     protected void doSave(Path path, Resume r) {
         try {
             Files.createFile(path);
-            objectStreamSerializer.doWrite(r, new BufferedOutputStream(Files.newOutputStream(path)));
         } catch (IOException e) {
             throw new StorageException("Couldn't create Path", path.getFileName().toString(), e);
         }
@@ -77,12 +76,7 @@ public class PathStorage extends AbstractStorage<Path> {
     @Override
     protected List<Resume> doCopyAll() {
         List<Resume> allResumes = new ArrayList<>();
-        List<Path> paths;
-        try {
-            paths = getPathsList().toList();
-        } catch (IOException e) {
-            throw new StorageException("Directory read error", null);
-        }
+        List<Path> paths = getPathsList().toList();
         for (Path p : paths) {
             allResumes.add(doGet(p));
         }
@@ -92,24 +86,19 @@ public class PathStorage extends AbstractStorage<Path> {
 
     @Override
     public void clear() {
-        try {
-            getPathsList().forEach(path -> doDelete(path));
-        } catch (IOException e) {
-            throw new StorageException("I/O error", null);
-        }
+        getPathsList().forEach(path -> doDelete(path));
     }
 
     @Override
     public int size() {
-        try {
-            return (int) getPathsList().count();
-        } catch (IOException e) {
-            throw new StorageException("I/O error", null);
-        }
-
+        return (int) getPathsList().count();
     }
 
-    private Stream<Path> getPathsList() throws IOException {
-        return Files.list(directory);
+    private Stream<Path> getPathsList() {
+        try {
+            return Files.list(directory);
+        } catch (IOException e) {
+            throw new StorageException("Directory read error", null);
+        }
     }
 }

@@ -48,7 +48,6 @@ public class FileStorage extends AbstractStorage<File> {
     protected void doSave(File file, Resume r) {
         try {
             file.createNewFile();
-            objectStreamSerializer.doWrite(r, new BufferedOutputStream(new FileOutputStream(file)));
         } catch (IOException e) {
             throw new StorageException("Couldn't create file", file.getName(), e);
         }
@@ -62,13 +61,11 @@ public class FileStorage extends AbstractStorage<File> {
         } catch (IOException e) {
             throw new StorageException("File write error", file.getName(), e);
         }
-
     }
 
     @Override
     protected void doDelete(File file) {
-        boolean result = file.delete();
-        if (!result) {
+        if (!file.delete()) {
             throw new StorageException("File wasn't deleted", file.getName());
         }
     }
@@ -76,36 +73,32 @@ public class FileStorage extends AbstractStorage<File> {
     @Override
     protected List<Resume> doCopyAll() {
         List<Resume> allResumes = new ArrayList<>();
-        File[] files = directory.listFiles();
-        if (files == null) {
-            throw new StorageException("Directory read error", null);
-        }
-        for (File f : files) {
+        File[] list = getFilesList();
+        for (File f : list) {
             allResumes.add(doGet(f));
         }
         return allResumes;
-
     }
 
     @Override
     public void clear() {
-        File[] d = directory.listFiles();
-        if (d == null) {
-            throw new StorageException("I/O error", null);
-        }
-        for (File file : d) {
+        File[] list = getFilesList();
+        for (File file : list) {
             doDelete(file);
         }
-
     }
 
     @Override
     public int size() {
-        String[] list = directory.list();
-        if (list == null) {
-            throw new StorageException("I/O error", null);
-        }
+        File[] list = getFilesList();
         return list.length;
     }
 
+    private File[] getFilesList() {
+        if (directory.listFiles() == null) {
+            throw new StorageException("Directory read error", null);
+        } else {
+            return directory.listFiles();
+        }
+    }
 }
