@@ -2,6 +2,8 @@ package com.basejava.webapp.storage;
 
 import com.basejava.webapp.exception.StorageException;
 import com.basejava.webapp.model.Resume;
+import com.basejava.webapp.storage.serialization.ObjectStreamSerializer;
+import com.basejava.webapp.storage.serialization.Serializer;
 
 import java.io.*;
 import java.util.ArrayList;
