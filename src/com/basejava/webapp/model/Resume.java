@@ -1,7 +1,6 @@
 package com.basejava.webapp.model;
 
 import com.basejava.webapp.exception.NotExistContactException;
-import com.basejava.webapp.storage.AbstractStorage;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -12,7 +11,6 @@ import java.util.EnumMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
-import java.util.logging.Logger;
 
 /**
  * Initial resume class
@@ -22,7 +20,7 @@ import java.util.logging.Logger;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Resume implements Comparable<Resume>, Serializable {
 
-    private static final Logger LOG = Logger.getLogger(AbstractStorage.class.getName());
+//    private static final Logger LOG = Logger.getLogger(AbstractStorage.class.getName());
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -49,7 +47,7 @@ public class Resume implements Comparable<Resume>, Serializable {
 
     public void addContact(ContactType contactType, String contact) {
         Objects.requireNonNull(contactType, "Contact must not be null!");
-        LOG.info("Add contact:\n " + contactType + " = " + contact);
+//        LOG.info("Add contact:\n " + contactType + " = " + contact);
         contacts.put(contactType, contact);
     }
 
@@ -58,13 +56,13 @@ public class Resume implements Comparable<Resume>, Serializable {
         if (!contacts.containsKey(contactType)) {
             throw new NotExistContactException(contactType);
         }
-        LOG.info("Get contact: \n " + contactType + " = " + contacts.get(contactType));
+//        LOG.info("Get contact: \n " + contactType + " = " + contacts.get(contactType));
         return contacts.get(contactType);
     }
 
     public void addSection(SectionType sectionType, AbstractSection section) {
         Objects.requireNonNull(section, "Section must not be null!");
-        LOG.info("\n Add section\n" + section);
+//        LOG.info("\n Add section\n" + section);
         sections.put(sectionType, section);
     }
 
