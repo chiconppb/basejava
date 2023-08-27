@@ -9,9 +9,11 @@ public class ListSection extends AbstractSection {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    private final SectionType section;
+    private SectionType section;
     private final List<String> strings = new ArrayList<>();
 
+    public ListSection() {
+    }
 
     public ListSection(SectionType sectionType, String text) {
         Objects.requireNonNull(sectionType, "Section type can't be null!");

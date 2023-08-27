@@ -28,12 +28,21 @@ public abstract class AbstractStorageTest {
     private static final String NAME_3 = "Name3";
     private static final String NAME_4 = "Name4";
 
-    private static final Resume RESUME_1 = new ResumeTestData().getFilledResume(UUID_1, NAME_1);
-    private static final Resume RESUME_2 = new ResumeTestData().getFilledResume(UUID_2, NAME_2);
-    private static final Resume RESUME_3 = new ResumeTestData().getFilledResume(UUID_3, NAME_3);
-    private static final Resume RESUME_4 = new ResumeTestData().getFilledResume(UUID_4, NAME_4);
-    private static final Resume NOT_EXIST_UUID_RESUME = new ResumeTestData().getFilledResume(UUID_NOT_EXIST, UUID_NOT_EXIST);
-    private static final Resume SAME_NAME_RESUME = new ResumeTestData().getFilledResume(UUID_5, NAME_1);
+    private static final Resume RESUME_1;
+    private static final Resume RESUME_2;
+    private static final Resume RESUME_3;
+    private static final Resume RESUME_4;
+    private static final Resume NOT_EXIST_UUID_RESUME;
+    private static final Resume SAME_NAME_RESUME;
+
+    static {
+        RESUME_1 = new ResumeTestData().getFilledResume(UUID_1, NAME_1);
+        RESUME_2 = new ResumeTestData().getFilledResume(UUID_2, NAME_2);
+        RESUME_3 = new ResumeTestData().getFilledResume(UUID_3, NAME_3);
+        RESUME_4 = new ResumeTestData().getFilledResume(UUID_4, NAME_4);
+        NOT_EXIST_UUID_RESUME = new ResumeTestData().getFilledResume(UUID_NOT_EXIST, UUID_NOT_EXIST);
+        SAME_NAME_RESUME = new ResumeTestData().getFilledResume(UUID_5, NAME_1);
+    }
 
     protected AbstractStorageTest(Storage s) {
         storage = s;

@@ -1,5 +1,10 @@
 package com.basejava.webapp.model;
 
+import com.basejava.webapp.util.LocalDateAdapter;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -11,12 +16,16 @@ import java.util.Objects;
 import static com.basejava.webapp.util.DateUtil.NOW;
 import static com.basejava.webapp.util.DateUtil.of;
 
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Company implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    private final Link homepage;
-    private final List<Period> periods;
+    private Link homepage;
+    private List<Period> periods;
+
+    public Company() {
+    }
 
     public Company(String name, String website, Period... periods) {
         this(new Link(name, website), Arrays.asList(periods));
@@ -63,11 +72,17 @@ public class Company implements Serializable {
         return company.getName().equals(this.getName()) && company.getPeriods().equals(this.getPeriods()) && company.getWebsite().equals(this.getWebsite());
     }
 
+    @XmlAccessorType(XmlAccessType.FIELD)
     public static class Period implements Serializable {
-        private final String title;
-        private final String description;
-        private final LocalDate beginDate;
-        private final LocalDate endDate;
+        private String title;
+        private String description;
+        @XmlJavaTypeAdapter(LocalDateAdapter.class)
+        private LocalDate beginDate;
+        @XmlJavaTypeAdapter(LocalDateAdapter.class)
+        private LocalDate endDate;
+
+        public Period() {
+        }
 
         public Period(int startYear, Month startMonth, String title, String description) {
             this(of(startYear, startMonth), NOW, title, description);
@@ -135,11 +150,8 @@ public class Company implements Serializable {
         public boolean equals(Object o) {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
-
             Period period = (Period) o;
-
-            if (!period.getTitle().equals(title)) return false;
-            return period.getTitle().equals(this.getTitle()) && period.getDescription().equals(this.getDescription()) && period.getBeginDate().equals(this.getEndDate()) && period.getEndDate().equals(this.getEndDate());
+            return Objects.equals(title, period.title) && Objects.equals(description, period.description) && Objects.equals(beginDate, period.beginDate) && Objects.equals(endDate, period.endDate);
         }
     }
 }

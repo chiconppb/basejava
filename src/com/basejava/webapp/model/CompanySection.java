@@ -9,8 +9,11 @@ public class CompanySection extends AbstractSection {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    private final SectionType section;
+    private SectionType section;
     private final List<Company> companies = new ArrayList<>();
+
+    public CompanySection() {
+    }
 
     public CompanySection(SectionType sectionType, Company company) {
         Objects.requireNonNull(sectionType, "Section type can't be null!");
