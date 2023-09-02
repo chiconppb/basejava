@@ -15,6 +15,11 @@ public class CompanySection extends AbstractSection {
     public CompanySection() {
     }
 
+    public CompanySection(SectionType sectionType) {
+        Objects.requireNonNull(sectionType, "Section type can't be null!");
+        section = sectionType;
+    }
+
     public CompanySection(SectionType sectionType, Company company) {
         Objects.requireNonNull(sectionType, "Section type can't be null!");
         Objects.requireNonNull(company, "Company can't be null!");
@@ -43,7 +48,7 @@ public class CompanySection extends AbstractSection {
         return section;
     }
 
-    public List<Company> getAll() {
+    public List<Company> getCompanies() {
         return companies;
     }
 
@@ -69,7 +74,7 @@ public class CompanySection extends AbstractSection {
 
         CompanySection sectionType = (CompanySection) o;
         if (!(sectionType.getSectionType().getTitle().equals(this.getSectionType().getTitle()))) return false;
-        return sectionType.getSectionType().getTitle().equals(this.getSectionType().getTitle()) && sectionType.getAll().equals(this.getAll());
+        return sectionType.getSectionType().getTitle().equals(this.getSectionType().getTitle()) && sectionType.getCompanies().equals(this.getCompanies());
     }
 
 }

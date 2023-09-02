@@ -15,6 +15,11 @@ public class ListSection extends AbstractSection {
     public ListSection() {
     }
 
+    public ListSection(SectionType sectionType) {
+        Objects.requireNonNull(sectionType, "Section type can't be null!");
+        section = sectionType;
+    }
+
     public ListSection(SectionType sectionType, String text) {
         Objects.requireNonNull(sectionType, "Section type can't be null!");
         Objects.requireNonNull(text, "String type can't be null!");
