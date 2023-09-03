@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 
 public class DataStreamSerializer implements Serializer {
-
     @Override
     public void doWrite(Resume r, OutputStream os) throws IOException {
         try (DataOutputStream dos = new DataOutputStream(os)) {
@@ -24,10 +23,11 @@ public class DataStreamSerializer implements Serializer {
             }
             dos.writeInt(sections.size());
             for (Map.Entry<SectionType, AbstractSection> entry : sections.entrySet()) {
-                switch (entry.getKey().name()) {
-                    case "PERSONAL", "OBJECTIVE" -> writeTextSection(entry.getValue(), dos);
-                    case "ACHIEVEMENT", "QUALIFICATIONS" -> writeListSection(entry.getValue(), dos);
-                    case "EXPERIENCE", "EDUCATION" -> writeCompanySection(entry.getValue(), dos);
+                dos.writeUTF(entry.getKey().name());
+                switch (entry.getKey()) {
+                    case PERSONAL, OBJECTIVE -> writeTextSection(entry.getValue(), dos);
+                    case ACHIEVEMENT, QUALIFICATIONS -> writeListSection(entry.getValue(), dos);
+                    case EXPERIENCE, EDUCATION -> writeCompanySection(entry.getValue(), dos);
                 }
             }
         }
@@ -45,17 +45,17 @@ public class DataStreamSerializer implements Serializer {
             }
             int sectionsCount = dis.readInt();
             for (int i = 0; i < sectionsCount; i++) {
-                String type = dis.readUTF();
+                SectionType type = SectionType.valueOf(dis.readUTF());
                 switch (type) {
-                    case "PERSONAL", "OBJECTIVE" -> {
+                    case PERSONAL, OBJECTIVE -> {
                         TextSection textSection = (TextSection) readTextSection(type, dis);
                         resume.addSection(textSection.getSectionType(), textSection);
                     }
-                    case "ACHIEVEMENT", "QUALIFICATIONS" -> {
+                    case ACHIEVEMENT, QUALIFICATIONS -> {
                         ListSection listSection = (ListSection) readListSection(type, dis);
                         resume.addSection(listSection.getSectionType(), listSection);
                     }
-                    case "EXPERIENCE", "EDUCATION" -> {
+                    case EXPERIENCE, EDUCATION -> {
                         CompanySection companySection = (CompanySection) readCompanySection(type, dis);
                         resume.addSection(companySection.getSectionType(), companySection);
                     }
@@ -65,12 +65,12 @@ public class DataStreamSerializer implements Serializer {
         }
     }
 
-    private AbstractSection readTextSection(String type, DataInputStream dataInputStream) throws IOException {
-        return new TextSection(SectionType.valueOf(type), dataInputStream.readUTF());
+    private AbstractSection readTextSection(SectionType type, DataInputStream dataInputStream) throws IOException {
+        return new TextSection(type, dataInputStream.readUTF());
     }
 
-    private AbstractSection readListSection(String type, DataInputStream dataInputStream) throws IOException {
-        ListSection section = new ListSection(SectionType.valueOf(type));
+    private AbstractSection readListSection(SectionType type, DataInputStream dataInputStream) throws IOException {
+        ListSection section = new ListSection(type);
         int stringsCount = dataInputStream.readInt();
         for (int i = 0; i < stringsCount; i++) {
             section.addString(dataInputStream.readUTF());
@@ -78,8 +78,8 @@ public class DataStreamSerializer implements Serializer {
         return section;
     }
 
-    private AbstractSection readCompanySection(String type, DataInputStream dataInputStream) throws IOException {
-        CompanySection companySection = new CompanySection(SectionType.valueOf(type));
+    private AbstractSection readCompanySection(SectionType type, DataInputStream dataInputStream) throws IOException {
+        CompanySection companySection = new CompanySection(type);
         int companiesCount = dataInputStream.readInt();
         for (int i = 0; i < companiesCount; i++) {
             String name = dataInputStream.readUTF();
@@ -103,14 +103,12 @@ public class DataStreamSerializer implements Serializer {
 
     private void writeTextSection(AbstractSection section, DataOutputStream dataOutputStream) throws IOException {
         TextSection textSection = (TextSection) section;
-        dataOutputStream.writeUTF(textSection.getSectionType().name());
         dataOutputStream.writeUTF(textSection.getDescription());
     }
 
     private void writeListSection(AbstractSection section, DataOutputStream dataOutputStream) throws IOException {
         ListSection listSection = (ListSection) section;
         List<String> strings = listSection.getStrings();
-        dataOutputStream.writeUTF(listSection.getSectionType().name());
         dataOutputStream.writeInt(strings.size());
         for (String s : strings) {
             dataOutputStream.writeUTF(s);
@@ -120,7 +118,6 @@ public class DataStreamSerializer implements Serializer {
     private void writeCompanySection(AbstractSection section, DataOutputStream dataOutputStream) throws IOException {
         CompanySection companySection = (CompanySection) section;
         List<Company> companies = companySection.getCompanies();
-        dataOutputStream.writeUTF(companySection.getSectionType().name());
         dataOutputStream.writeInt(companies.size());
         for (Company c : companies) {
             dataOutputStream.writeUTF(c.getName());
@@ -135,6 +132,4 @@ public class DataStreamSerializer implements Serializer {
             }
         }
     }
-
-
 }
