@@ -9,21 +9,13 @@ public class CompanySection extends AbstractSection {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    private SectionType section;
     private final List<Company> companies = new ArrayList<>();
 
     public CompanySection() {
     }
 
-    public CompanySection(SectionType sectionType) {
-        Objects.requireNonNull(sectionType, "Section type can't be null!");
-        section = sectionType;
-    }
-
-    public CompanySection(SectionType sectionType, Company company) {
-        Objects.requireNonNull(sectionType, "Section type can't be null!");
+    public CompanySection(Company company) {
         Objects.requireNonNull(company, "Company can't be null!");
-        section = sectionType;
         companies.add(company);
     }
 
@@ -44,10 +36,6 @@ public class CompanySection extends AbstractSection {
         companies.add(company);
     }
 
-    public SectionType getSectionType() {
-        return section;
-    }
-
     public List<Company> getCompanies() {
         return companies;
     }
@@ -59,22 +47,19 @@ public class CompanySection extends AbstractSection {
             s.append(com.toString());
             s.append("\n ");
         }
-        return " Section name: " + section.getTitle() + "\n Description: \n " + s;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(section.getTitle(), companies);
+        return " Company section\n Description: \n " + s;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
-        CompanySection sectionType = (CompanySection) o;
-        if (!(sectionType.getSectionType().getTitle().equals(this.getSectionType().getTitle()))) return false;
-        return sectionType.getSectionType().getTitle().equals(this.getSectionType().getTitle()) && sectionType.getCompanies().equals(this.getCompanies());
+        CompanySection that = (CompanySection) o;
+        return Objects.equals(companies, that.companies);
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(companies);
+    }
 }

@@ -40,12 +40,12 @@ public class ResumeTestData {
         resume.addContact(ContactType.HOMEPAGE, "https://www.urise.com");
 
         //////////////////////// Creating sections ////////////////////////
-        TextSection personal = new TextSection(SectionType.PERSONAL, personalString);
+        TextSection personal = new TextSection(personalString);
 
-        ListSection qualifications = new ListSection(SectionType.QUALIFICATIONS, qualificationsString_1);
+        ListSection qualifications = new ListSection(qualificationsString_1);
         qualifications.addString(qualificationsString_2);
 
-        CompanySection experience = new CompanySection(SectionType.EXPERIENCE, company_1);
+        CompanySection experience = new CompanySection(company_1);
         experience.addCompany(company_2);
 
         //////////////////////// Add sections to resume ////////////////////////
