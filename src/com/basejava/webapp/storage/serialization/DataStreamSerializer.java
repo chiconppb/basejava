@@ -4,9 +4,7 @@ import com.basejava.webapp.model.*;
 
 import java.io.*;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class DataStreamSerializer implements Serializer {
     @Override
@@ -14,22 +12,22 @@ public class DataStreamSerializer implements Serializer {
         try (DataOutputStream dos = new DataOutputStream(os)) {
             dos.writeUTF(r.getUuid());
             dos.writeUTF(r.getFullName());
-            Map<ContactType, String> contacts = r.getContacts();
-            Map<SectionType, AbstractSection> sections = r.getSections();
+            Set<Map.Entry<ContactType, String>> contacts = r.getContacts().entrySet();
+            Set<Map.Entry<SectionType, AbstractSection>> sections = r.getSections().entrySet();
             dos.writeInt(contacts.size());
-            for (Map.Entry<ContactType, String> entry : contacts.entrySet()) {
-                dos.writeUTF(entry.getKey().name());
-                dos.writeUTF(entry.getValue());
-            }
+            writeContactsWithException(contacts, dos, (contact, dataOutputStream) -> {
+                dataOutputStream.writeUTF(contact.getKey().name());
+                dataOutputStream.writeUTF(contact.getValue());
+            });
             dos.writeInt(sections.size());
-            for (Map.Entry<SectionType, AbstractSection> entry : sections.entrySet()) {
-                dos.writeUTF(entry.getKey().name());
-                switch (entry.getKey()) {
-                    case PERSONAL, OBJECTIVE -> writeTextSection(entry.getValue(), dos);
-                    case ACHIEVEMENT, QUALIFICATIONS -> writeListSection(entry.getValue(), dos);
-                    case EXPERIENCE, EDUCATION -> writeCompanySection(entry.getValue(), dos);
+            writeSectionsWithException(sections, dos, (section, dataOutputStream) -> {
+                dataOutputStream.writeUTF(section.getKey().name());
+                switch (section.getKey()) {
+                    case PERSONAL, OBJECTIVE -> writeTextSection(section.getValue(), dataOutputStream);
+                    case ACHIEVEMENT, QUALIFICATIONS -> writeListSection(section.getValue(), dataOutputStream);
+                    case EXPERIENCE, EDUCATION -> writeCompanySection(section.getValue(), dataOutputStream);
                 }
-            }
+            });
         }
     }
 
@@ -62,6 +60,18 @@ public class DataStreamSerializer implements Serializer {
                 }
             }
             return resume;
+        }
+    }
+
+    private void writeContactsWithException(Set<Map.Entry<ContactType, String>> contacts, DataOutputStream dataOutputStream, StreamWriter<ContactType, String> writer) throws IOException {
+        for (Map.Entry<ContactType, String> contact : contacts) {
+            writer.writeStream(contact, dataOutputStream);
+        }
+    }
+
+    private void writeSectionsWithException(Set<Map.Entry<SectionType, AbstractSection>> sections, DataOutputStream dataOutputStream, StreamWriter<SectionType, AbstractSection> writer) throws IOException {
+        for (Map.Entry<SectionType, AbstractSection> section : sections) {
+            writer.writeStream(section, dataOutputStream);
         }
     }
 
