@@ -1,11 +1,9 @@
 package com.basejava.webapp.storage.serialization;
 
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.util.Map;
 
 @FunctionalInterface
-public interface StreamWriter<K,V> {
+public interface StreamWriter<T> {
 
-    void writeStream(Map.Entry<K, V> contact, DataOutputStream dataOutputStream) throws IOException;
+    void writeStream(T elem) throws IOException;
 }

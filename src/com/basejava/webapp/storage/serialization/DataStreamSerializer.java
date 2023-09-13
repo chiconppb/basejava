@@ -14,18 +14,16 @@ public class DataStreamSerializer implements Serializer {
             dos.writeUTF(r.getFullName());
             Set<Map.Entry<ContactType, String>> contacts = r.getContacts().entrySet();
             Set<Map.Entry<SectionType, AbstractSection>> sections = r.getSections().entrySet();
-            dos.writeInt(contacts.size());
-            writeContactsWithException(contacts, dos, (contact, dataOutputStream) -> {
-                dataOutputStream.writeUTF(contact.getKey().name());
-                dataOutputStream.writeUTF(contact.getValue());
+            writeWithException(contacts, dos, (contact) -> {
+                dos.writeUTF(contact.getKey().name());
+                dos.writeUTF(contact.getValue());
             });
-            dos.writeInt(sections.size());
-            writeSectionsWithException(sections, dos, (section, dataOutputStream) -> {
-                dataOutputStream.writeUTF(section.getKey().name());
+            writeWithException(sections, dos, (section) -> {
+                dos.writeUTF(section.getKey().name());
                 switch (section.getKey()) {
-                    case PERSONAL, OBJECTIVE -> writeTextSection(section.getValue(), dataOutputStream);
-                    case ACHIEVEMENT, QUALIFICATIONS -> writeListSection(section.getValue(), dataOutputStream);
-                    case EXPERIENCE, EDUCATION -> writeCompanySection(section.getValue(), dataOutputStream);
+                    case PERSONAL, OBJECTIVE -> writeTextSection(section.getValue(), dos);
+                    case ACHIEVEMENT, QUALIFICATIONS -> writeListSection(section.getValue(), dos);
+                    case EXPERIENCE, EDUCATION -> writeCompanySection(section.getValue(), dos);
                 }
             });
         }
@@ -63,15 +61,10 @@ public class DataStreamSerializer implements Serializer {
         }
     }
 
-    private void writeContactsWithException(Set<Map.Entry<ContactType, String>> contacts, DataOutputStream dataOutputStream, StreamWriter<ContactType, String> writer) throws IOException {
-        for (Map.Entry<ContactType, String> contact : contacts) {
-            writer.writeStream(contact, dataOutputStream);
-        }
-    }
-
-    private void writeSectionsWithException(Set<Map.Entry<SectionType, AbstractSection>> sections, DataOutputStream dataOutputStream, StreamWriter<SectionType, AbstractSection> writer) throws IOException {
-        for (Map.Entry<SectionType, AbstractSection> section : sections) {
-            writer.writeStream(section, dataOutputStream);
+    private <T> void writeWithException(Collection<T> collection, DataOutputStream dataOutputStream, StreamWriter<T> writer) throws IOException {
+        dataOutputStream.writeInt(collection.size());
+        for (T elem : collection) {
+            writer.writeStream(elem);
         }
     }
 
