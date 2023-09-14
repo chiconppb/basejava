@@ -22,8 +22,26 @@ public class DataStreamSerializer implements Serializer {
                 dos.writeUTF(section.getKey().name());
                 switch (section.getKey()) {
                     case PERSONAL, OBJECTIVE -> writeTextSection(section.getValue(), dos);
-                    case ACHIEVEMENT, QUALIFICATIONS -> writeListSection(section.getValue(), dos);
-                    case EXPERIENCE, EDUCATION -> writeCompanySection(section.getValue(), dos);
+                    case ACHIEVEMENT, QUALIFICATIONS -> {
+                        ListSection listSection = (ListSection) section.getValue();
+                        List<String> strings = listSection.getStrings();
+                        writeWithException(strings, dos, dos::writeUTF);
+                    }
+                    case EXPERIENCE, EDUCATION -> {
+                        CompanySection companySection = (CompanySection) section.getValue();
+                        List<Company> companies = companySection.getCompanies();
+                        writeWithException(companies, dos, (company) -> {
+                            dos.writeUTF(company.getName());
+                            dos.writeUTF(company.getWebsite());
+                            List<Company.Period> periods = company.getPeriods();
+                            writeWithException(periods, dos, (period) -> {
+                                dos.writeUTF(period.getTitle());
+                                dos.writeUTF(period.getDescription());
+                                dos.writeUTF(period.getBeginDate().toString());
+                                dos.writeUTF(period.getEndDate().toString());
+                            });
+                        });
+                    }
                 }
             });
         }
@@ -107,32 +125,5 @@ public class DataStreamSerializer implements Serializer {
     private void writeTextSection(AbstractSection section, DataOutputStream dataOutputStream) throws IOException {
         TextSection textSection = (TextSection) section;
         dataOutputStream.writeUTF(textSection.getDescription());
-    }
-
-    private void writeListSection(AbstractSection section, DataOutputStream dataOutputStream) throws IOException {
-        ListSection listSection = (ListSection) section;
-        List<String> strings = listSection.getStrings();
-        dataOutputStream.writeInt(strings.size());
-        for (String s : strings) {
-            dataOutputStream.writeUTF(s);
-        }
-    }
-
-    private void writeCompanySection(AbstractSection section, DataOutputStream dataOutputStream) throws IOException {
-        CompanySection companySection = (CompanySection) section;
-        List<Company> companies = companySection.getCompanies();
-        dataOutputStream.writeInt(companies.size());
-        for (Company c : companies) {
-            dataOutputStream.writeUTF(c.getName());
-            dataOutputStream.writeUTF(c.getWebsite());
-            List<Company.Period> periods = c.getPeriods();
-            dataOutputStream.writeInt(periods.size());
-            for (Company.Period p : periods) {
-                dataOutputStream.writeUTF(p.getTitle());
-                dataOutputStream.writeUTF(p.getDescription());
-                dataOutputStream.writeUTF(p.getBeginDate().toString());
-                dataOutputStream.writeUTF(p.getEndDate().toString());
-            }
-        }
     }
 }
