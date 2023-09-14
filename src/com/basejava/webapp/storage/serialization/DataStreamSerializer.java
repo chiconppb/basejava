@@ -9,6 +9,7 @@ import java.util.*;
 public class DataStreamSerializer implements Serializer {
     @Override
     public void doWrite(Resume r, OutputStream os) throws IOException {
+        Objects.requireNonNull(r);
         try (DataOutputStream dos = new DataOutputStream(os)) {
             dos.writeUTF(r.getUuid());
             dos.writeUTF(r.getFullName());
@@ -53,76 +54,66 @@ public class DataStreamSerializer implements Serializer {
             String uuid = dis.readUTF();
             String fullName = dis.readUTF();
             Resume resume = new Resume(uuid, fullName);
-            int contactsCount = dis.readInt();
-            for (int i = 0; i < contactsCount; i++) {
-                resume.addContact(ContactType.valueOf(dis.readUTF()), dis.readUTF());
-            }
-            int sectionsCount = dis.readInt();
-            for (int i = 0; i < sectionsCount; i++) {
+            readWithException(dis, () -> resume.addContact(ContactType.valueOf(dis.readUTF()), dis.readUTF()));
+            readWithException(dis, () -> {
                 SectionType type = SectionType.valueOf(dis.readUTF());
                 switch (type) {
-                    case PERSONAL, OBJECTIVE -> {
-                        TextSection textSection = (TextSection) readTextSection(dis);
-                        resume.addSection(type, textSection);
-                    }
+                    case PERSONAL, OBJECTIVE -> resume.addSection(type, readTextSection(dis));
                     case ACHIEVEMENT, QUALIFICATIONS -> {
-                        ListSection listSection = (ListSection) readListSection(dis);
+                        ListSection listSection = new ListSection();
+                        readWithException(dis, () -> listSection.addString(dis.readUTF()));
                         resume.addSection(type, listSection);
                     }
                     case EXPERIENCE, EDUCATION -> {
-                        CompanySection companySection = (CompanySection) readCompanySection(dis);
+                        CompanySection companySection = new CompanySection();
+                        readWithException(dis, () -> {
+                            String name = dis.readUTF();
+                            String website = dis.readUTF();
+                            Link link = new Link(name, website);
+                            List<Company.Period> periods = new ArrayList<>();
+                            readWithException(dis, () -> {
+                                String title = dis.readUTF();
+                                String description = dis.readUTF();
+                                LocalDate beginDate = LocalDate.parse(dis.readUTF());
+                                LocalDate endDate = LocalDate.parse(dis.readUTF());
+                                Company.Period period = new Company.Period(beginDate, endDate, title, description);
+                                periods.add(period);
+                            });
+                            Company company = new Company(link, periods);
+                            companySection.addCompany(company);
+                        });
                         resume.addSection(type, companySection);
                     }
                 }
-            }
+            });
             return resume;
         }
     }
 
     private <T> void writeWithException(Collection<T> collection, DataOutputStream dataOutputStream, StreamWriter<T> writer) throws IOException {
+        Objects.requireNonNull(collection);
+        Objects.requireNonNull(dataOutputStream);
         dataOutputStream.writeInt(collection.size());
         for (T elem : collection) {
             writer.writeStream(elem);
         }
     }
 
-    private AbstractSection readTextSection(DataInputStream dataInputStream) throws IOException {
+    private void readWithException(DataInputStream dataInputStream, StreamReader reader) throws IOException {
+        Objects.requireNonNull(dataInputStream);
+        int counter = dataInputStream.readInt();
+        for (int i = 0; i < counter; i++) {
+            reader.readStream();
+        }
+    }
+
+    private TextSection readTextSection(DataInputStream dataInputStream) throws IOException {
+        Objects.requireNonNull(dataInputStream);
         return new TextSection(dataInputStream.readUTF());
     }
 
-    private AbstractSection readListSection(DataInputStream dataInputStream) throws IOException {
-        ListSection section = new ListSection();
-        int stringsCount = dataInputStream.readInt();
-        for (int i = 0; i < stringsCount; i++) {
-            section.addString(dataInputStream.readUTF());
-        }
-        return section;
-    }
-
-    private AbstractSection readCompanySection(DataInputStream dataInputStream) throws IOException {
-        CompanySection companySection = new CompanySection();
-        int companiesCount = dataInputStream.readInt();
-        for (int i = 0; i < companiesCount; i++) {
-            String name = dataInputStream.readUTF();
-            String website = dataInputStream.readUTF();
-            Link link = new Link(name, website);
-            List<Company.Period> periods = new ArrayList<>();
-            int periodsCount = dataInputStream.readInt();
-            for (int j = 0; j < periodsCount; j++) {
-                String title = dataInputStream.readUTF();
-                String description = dataInputStream.readUTF();
-                LocalDate beginDate = LocalDate.parse(dataInputStream.readUTF());
-                LocalDate endDate = LocalDate.parse(dataInputStream.readUTF());
-                Company.Period period = new Company.Period(beginDate, endDate, title, description);
-                periods.add(period);
-            }
-            Company company = new Company(link, periods);
-            companySection.addCompany(company);
-        }
-        return companySection;
-    }
-
     private void writeTextSection(AbstractSection section, DataOutputStream dataOutputStream) throws IOException {
+        Objects.requireNonNull(dataOutputStream);
         TextSection textSection = (TextSection) section;
         dataOutputStream.writeUTF(textSection.getDescription());
     }
