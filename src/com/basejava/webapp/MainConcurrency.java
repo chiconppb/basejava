@@ -1,7 +1,5 @@
 package com.basejava.webapp;
 
-import com.basejava.webapp.model.Resume;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,7 +45,8 @@ public class MainConcurrency {
 //        Thread.sleep(500);
 
         System.out.println(mainConcurrency.counter);
-        getDeadLock();
+        DeadLock dl = new DeadLock();
+        dl.doDeadLock();
     }
 
     private synchronized void inc() {
@@ -58,40 +57,5 @@ public class MainConcurrency {
         counter++;
 //        }
 
-    }
-
-    private static void getDeadLock() {
-        Resume resume1 = new Resume();
-        Resume resume2 = new Resume();
-        Thread thread1 = new Thread(() -> {
-            synchronized (resume1) {
-                System.out.println("Thread 1 lock resume1");
-                try {
-                    Thread.sleep(10);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException();
-                }
-                System.out.println("Thread 1 trying to lock resume2");
-                synchronized (resume2) {
-                    System.out.println("Thread 1 lock resume1 and resume2");
-                }
-            }
-        });
-        Thread thread2 = new Thread(() -> {
-            synchronized (resume2) {
-                System.out.println("Thread 2 lock resume2");
-                try {
-                    Thread.sleep(10);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException();
-                }
-                System.out.println("Thread 2 trying to lock resume1");
-                synchronized (resume1) {
-                    System.out.println("Thread 2 lock resume2 and resume1");
-                }
-            }
-        });
-        thread1.start();
-        thread2.start();
     }
 }
