@@ -1,9 +1,7 @@
 package com.basejava.webapp;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class StreamTask {
 
@@ -25,24 +23,20 @@ public class StreamTask {
     }
 
     List<Integer> oddOrEven(List<Integer> integers) {
-        List<Integer> listEven = new ArrayList<>();
-        List<Integer> listOdd = new ArrayList<>();
-
         int streamSum = integers.stream()
-                .mapToInt(integer -> {
-                    if (integer % 2 == 0) {
-                        listOdd.add(integer);
-                    } else {
-                        listEven.add(integer);
-                    }
-                    return integer;
-                })
+                .mapToInt(Integer::intValue)
                 .sum();
 
-        System.out.println("Sum of elements: " + streamSum);
-        if (streamSum % 2 == 0) {
-            return listEven;
-        } else return listOdd;
+        List<Integer> map = integers.stream()
+                .collect(Collectors
+                        .partitioningBy(number -> (number % 2) == 0))
+                .values()
+                .stream()
+                .toList()
+                .get(((streamSum % 2) == 0) ? 0 : 1);
+
+        System.out.println("Sum is " + streamSum);
+        return map;
     }
 
     int[] getRandomNumbers(int count) {
