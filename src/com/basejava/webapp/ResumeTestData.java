@@ -36,8 +36,8 @@ public class ResumeTestData {
         resume = new Resume(uuid, fullName);
 
         //////////////////////// Add contacts to resume ////////////////////////
-        resume.addContact(ContactType.PHONE_NUMBER, "911");
-        resume.addContact(ContactType.HOMEPAGE, "https://www.urise.com");
+//        resume.addContact(ContactType.PHONE_NUMBER, "911");
+//        resume.addContact(ContactType.HOMEPAGE, "https://www.urise.com");
 
         //////////////////////// Creating sections ////////////////////////
         TextSection personal = new TextSection(personalString);
@@ -49,9 +49,9 @@ public class ResumeTestData {
         experience.addCompany(company_2);
 
         //////////////////////// Add sections to resume ////////////////////////
-        resume.addSection(SectionType.PERSONAL, personal);
-        resume.addSection(SectionType.QUALIFICATIONS, qualifications);
-        resume.addSection(SectionType.EXPERIENCE, experience);
+//        resume.addSection(SectionType.PERSONAL, personal);
+//        resume.addSection(SectionType.QUALIFICATIONS, qualifications);
+//        resume.addSection(SectionType.EXPERIENCE, experience);
 
         return resume;
     }
