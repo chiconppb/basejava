@@ -9,18 +9,20 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 public abstract class AbstractStorageTest {
 
     protected static final File STORAGE_DIR = new File("C:\\Users\\CHICO\\Desktop\\lessons\\basejava\\storage");
     protected final Storage storage;
 
-    private static final String UUID_1 = "uuid1";
-    private static final String UUID_2 = "uuid2";
-    private static final String UUID_3 = "uuid3";
-    private static final String UUID_4 = "uuid4";
-    private static final String UUID_5 = "uuid5";
+    private static final String UUID_1 = UUID.randomUUID().toString();
+    private static final String UUID_2 = UUID.randomUUID().toString();
+    private static final String UUID_3 = UUID.randomUUID().toString();
+    private static final String UUID_4 = UUID.randomUUID().toString();
+    private static final String UUID_5 = UUID.randomUUID().toString();
     private static final String UUID_NOT_EXIST = "dummy";
 
     private static final String NAME_1 = "Name1";
@@ -99,6 +101,7 @@ public abstract class AbstractStorageTest {
     @Test
     public void getAll() {
         Resume[] expected = new Resume[]{RESUME_1, SAME_NAME_RESUME, RESUME_2, RESUME_3};
+        Arrays.sort(expected);
         List<Resume> resumes = storage.getAllSorted();
         Resume[] actualResumes = resumes.toArray(new Resume[0]);
         Assert.assertEquals(4, storage.size());
