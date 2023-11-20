@@ -25,7 +25,7 @@ public class SqlStorage implements Storage {
 
     @Override
     public void update(Resume r) {
-        sqlHelper.doRequest("UPDATE resume SET full_name=? WHERE uuid=?", (ps) -> {
+        sqlHelper.<Void>doRequest("UPDATE resume SET full_name=? WHERE uuid=?", (ps) -> {
             ps.setString(1, r.getFullName());
             ps.setString(2, r.getUuid());
             if (ps.executeUpdate() == 0) {
@@ -38,7 +38,7 @@ public class SqlStorage implements Storage {
 
     @Override
     public void save(Resume r) {
-        sqlHelper.doRequest("INSERT INTO resume (uuid, full_name) VALUES (?,?)", (ps) -> {
+        sqlHelper.<Void>doRequest("INSERT INTO resume (uuid, full_name) VALUES (?,?)", (ps) -> {
             ps.setString(1, r.getUuid());
             ps.setString(2, r.getFullName());
             ps.execute();
@@ -60,24 +60,22 @@ public class SqlStorage implements Storage {
 
     @Override
     public void delete(String uuid) {
-        sqlHelper.doRequest("DELETE FROM resume WHERE uuid=?", (ps) -> {
+        sqlHelper.<Void>doRequest("DELETE FROM resume WHERE uuid=?", (ps) -> {
             ps.setString(1, uuid);
             if (ps.executeUpdate() == 0) {
                 throw new NotExistStorageException(uuid);
             }
-            ps.execute();
             return null;
         });
     }
 
     @Override
     public List<Resume> getAllSorted() {
-        List<Resume> list = new ArrayList<>();
         return sqlHelper.doRequest("SELECT * FROM resume ORDER BY full_name, uuid", (ps) -> {
+            List<Resume> list = new ArrayList<>();
             ResultSet rs = ps.executeQuery();
-            for (int i = 0; i < size(); i++) {
-                rs.next();
-                list.add(i, new Resume(rs.getString("uuid"), rs.getString("full_name")));
+            while (rs.next()) {
+                list.add(new Resume(rs.getString("uuid"), rs.getString("full_name")));
             }
             return list;
         });
@@ -87,8 +85,7 @@ public class SqlStorage implements Storage {
     public int size() {
         return sqlHelper.doRequest("SELECT count(*) FROM resume", (ps) -> {
             ResultSet rs = ps.executeQuery();
-            rs.next();
-            return rs.getInt(1);
+            return rs.next() ? rs.getInt(1) : 0;
         });
     }
 }
