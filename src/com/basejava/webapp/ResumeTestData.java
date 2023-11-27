@@ -36,8 +36,8 @@ public class ResumeTestData {
         resume = new Resume(uuid, fullName);
 
         //////////////////////// Add contacts to resume ////////////////////////
-//        resume.addContact(ContactType.PHONE_NUMBER, "911");
-//        resume.addContact(ContactType.HOMEPAGE, "https://www.urise.com");
+        resume.addContact(ContactType.PHONE_NUMBER, "911");
+        resume.addContact(ContactType.HOMEPAGE, "https://www.urise.com");
 
         //////////////////////// Creating sections ////////////////////////
         TextSection personal = new TextSection(personalString);
