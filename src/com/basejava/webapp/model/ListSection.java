@@ -32,9 +32,9 @@ public class ListSection extends AbstractSection {
         StringBuilder s = new StringBuilder();
         for (String str : strings) {
             s.append(str);
-            s.append("\n ");
+            s.append('\n');
         }
-        return " List section\n Description:\n " + s;
+        return s.toString();
     }
 
     @Override

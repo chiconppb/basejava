@@ -49,8 +49,8 @@ public class ResumeTestData {
         experience.addCompany(company_2);
 
         //////////////////////// Add sections to resume ////////////////////////
-//        resume.addSection(SectionType.PERSONAL, personal);
-//        resume.addSection(SectionType.QUALIFICATIONS, qualifications);
+        resume.addSection(SectionType.PERSONAL, personal);
+        resume.addSection(SectionType.QUALIFICATIONS, qualifications);
 //        resume.addSection(SectionType.EXPERIENCE, experience);
 
         return resume;
