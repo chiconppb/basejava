@@ -86,24 +86,46 @@ public class SqlStorage implements Storage {
 
     @Override
     public List<Resume> getAllSorted() {
-        return sqlHelper.doRequest("" +
+//        return sqlHelper.doRequest("" +
+//                " SELECT * FROM resume r " +
+//                "     LEFT JOIN contact c " +
+//                "            ON r.uuid=c.resume_uuid " +
+//                "      ORDER BY full_name, uuid", (ps) -> {
+//            Map<String, Resume> map = new LinkedHashMap<>();
+//            ResultSet rs = ps.executeQuery();
+//            while (rs.next()) {
+//                String uuid = rs.getString("uuid");
+//                Resume resume = map.get(uuid);
+//                if (!map.containsKey(uuid)) {
+//                    resume = new Resume(uuid, rs.getString("full_name"));
+//                    map.put(uuid, resume);
+//                }
+//                addContact(resume, rs);
+//            }
+//            return new ArrayList<>(map.values());
+//        });
+        Map<String, Resume> resumes = new LinkedHashMap<>();
+        sqlHelper.doRequest("" +
                 " SELECT * FROM resume r " +
-                "     LEFT JOIN contact c " +
-                "            ON r.uuid=c.resume_uuid " +
                 "      ORDER BY full_name, uuid", (ps) -> {
-            Map<String, Resume> map = new LinkedHashMap<>();
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 String uuid = rs.getString("uuid");
-                Resume resume = map.get(uuid);
-                if (!map.containsKey(uuid)) {
-                    resume = new Resume(uuid, rs.getString("full_name"));
-                    map.put(uuid, resume);
-                }
-                addContact(resume, rs);
+                resumes.put(uuid, new Resume(uuid, rs.getString("full_name")));
             }
-            return new ArrayList<>(map.values());
+            return null;
         });
+        sqlHelper.doRequest("" +
+                " SELECT * FROM contact c " +
+                "      ORDER BY resume_uuid", (ps) -> {
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Resume resume = resumes.get(rs.getString("resume_uuid"));
+                resume.addContact(ContactType.valueOf(rs.getString("type")), rs.getString("value"));
+            }
+            return null;
+        });
+        return new ArrayList<>(resumes.values());
     }
 
     @Override
@@ -114,7 +136,7 @@ public class SqlStorage implements Storage {
         });
     }
 
-    private void deleteContacts(Resume r, Connection connection){
+    private void deleteContacts(Resume r, Connection connection) {
         sqlHelper.doRequest("DELETE FROM contact WHERE resume_uuid=?", ps -> {
             ps.setString(1, r.getUuid());
             ps.execute();
