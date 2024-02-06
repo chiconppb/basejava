@@ -4,6 +4,7 @@ import com.basejava.webapp.Config;
 import com.basejava.webapp.model.Resume;
 import com.basejava.webapp.storage.Storage;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -12,9 +13,10 @@ import java.io.PrintWriter;
 import java.util.List;
 
 public class ResumeServlet extends HttpServlet {
+    Storage storage;
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        Storage storage = Config.getInstance().getStorage();
         List<Resume> resumes = storage.getAllSorted();
         request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
@@ -55,7 +57,10 @@ public class ResumeServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) {
+    }
 
+    public void init(ServletConfig config) {
+        storage = Config.getInstance().getStorage();
     }
 
     private void printRow(PrintWriter out, String... strings) {
