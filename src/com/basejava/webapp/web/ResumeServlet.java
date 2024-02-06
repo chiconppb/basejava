@@ -13,7 +13,7 @@ import java.io.PrintWriter;
 import java.util.List;
 
 public class ResumeServlet extends HttpServlet {
-    Storage storage;
+    private Storage storage;
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
