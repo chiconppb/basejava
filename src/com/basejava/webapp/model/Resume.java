@@ -1,6 +1,5 @@
 package com.basejava.webapp.model;
 
-import com.basejava.webapp.exception.NotExistContactException;
 import com.basejava.webapp.storage.AbstractStorage;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -26,6 +25,17 @@ public class Resume implements Comparable<Resume>, Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
+
+    private static final Resume DEFAULT = new Resume();
+
+    static {
+        DEFAULT.addSection(SectionType.PERSONAL, TextSection.getEmptySection());
+        DEFAULT.addSection(SectionType.OBJECTIVE, TextSection.getEmptySection());
+        DEFAULT.addSection(SectionType.ACHIEVEMENT, ListSection.getEmptySection());
+        DEFAULT.addSection(SectionType.QUALIFICATIONS, ListSection.getEmptySection());
+        DEFAULT.addSection(SectionType.EXPERIENCE, CompanySection.getEmptySection());
+        DEFAULT.addSection(SectionType.EDUCATION, CompanySection.getEmptySection());
+    }
 
     private String uuid;
     private String fullName;
@@ -56,7 +66,8 @@ public class Resume implements Comparable<Resume>, Serializable {
     public String getContact(ContactType contactType) {
         Objects.requireNonNull(contactType, "Contact type can't be null!");
         if (!contacts.containsKey(contactType)) {
-            throw new NotExistContactException(contactType);
+            return "";
+//            throw new NotExistContactException(contactType);
         }
         LOG.info("Get contact: \n " + contactType + " = " + contacts.get(contactType));
         return contacts.get(contactType);
@@ -106,5 +117,13 @@ public class Resume implements Comparable<Resume>, Serializable {
     public int compareTo(Resume o) {
         int i = fullName.compareTo(o.fullName);
         return i != 0 ? i : uuid.compareTo(o.uuid);
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public static Resume getEmptyResume() {
+        return DEFAULT;
     }
 }

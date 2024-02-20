@@ -54,24 +54,27 @@ public class SqlStorage implements Storage {
 
     @Override
     public Resume get(String uuid) {
-        return sqlHelper.doRequest("" +
-                "SELECT * FROM resume r " +
-                "    LEFT JOIN contact c " +
-                "           ON r.uuid = c.resume_uuid " +
-                "    LEFT JOIN section s " +
-                "           ON r.uuid=s.resume_uuid " +
-                "        WHERE uuid = ?", (ps) -> {
-            ps.setString(1, uuid);
-            ResultSet rs = ps.executeQuery();
-            if (!rs.next()) {
-                throw new NotExistStorageException(uuid);
+        return sqlHelper.transactionalExecute(conn -> {
+            Resume r;
+            try (PreparedStatement ps = conn.prepareStatement("" +
+                    "SELECT * FROM resume r " +
+                    "    LEFT JOIN contact c " +
+                    "           ON r.uuid = c.resume_uuid " +
+                    "    LEFT JOIN section s " +
+                    "           ON r.uuid=s.resume_uuid " +
+                    "        WHERE uuid = ?")) {
+                ps.setString(1, uuid);
+                ResultSet rs = ps.executeQuery();
+                if (!rs.next()) {
+                    throw new NotExistStorageException(uuid);
+                }
+                r = new Resume(uuid, rs.getString("full_name"));
+                do {
+                    addContactToResume(r, rs);
+                    addSectionToResume(r, rs);
+                } while (rs.next());
+                return r;
             }
-            Resume r = new Resume(uuid, rs.getString("full_name"));
-            do {
-                addContactToResume(r, rs);
-                addSectionToResume(r, rs);
-            } while (rs.next());
-            return r;
         });
     }
 

@@ -8,6 +8,8 @@ import java.util.Objects;
 public class ListSection extends AbstractSection {
     @Serial
     private static final long serialVersionUID = 1L;
+    private static final ListSection DEFAULT = new ListSection("");
+
 
     private final List<String> strings = new ArrayList<>();
 
@@ -48,5 +50,9 @@ public class ListSection extends AbstractSection {
     @Override
     public int hashCode() {
         return Objects.hash(strings);
+    }
+
+    public static AbstractSection getEmptySection() {
+        return DEFAULT;
     }
 }

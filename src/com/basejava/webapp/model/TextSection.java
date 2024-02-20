@@ -6,6 +6,7 @@ import java.util.Objects;
 public class TextSection extends AbstractSection {
     @Serial
     private static final long serialVersionUID = 1L;
+    private static final TextSection DEFAULT = new TextSection("");
 
     private String text;
 
@@ -22,7 +23,7 @@ public class TextSection extends AbstractSection {
 
     @Override
     public String toString() {
-        return " Text section\n Description: " + text;
+        return text;
     }
 
     @Override
@@ -36,5 +37,9 @@ public class TextSection extends AbstractSection {
     @Override
     public int hashCode() {
         return Objects.hash(text);
+    }
+
+    public static AbstractSection getEmptySection() {
+        return DEFAULT;
     }
 }

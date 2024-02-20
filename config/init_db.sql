@@ -14,10 +14,10 @@ CREATE TABLE contact
 
 CREATE TABLE section
 (
-    id           SERIAL,
+    id           SERIAL PRIMARY KEY,
     resume_uuid  CHAR(36) NOT NULL REFERENCES public.resume (uuid) ON DELETE CASCADE,
     text         TEXT     NOT NULL,
-    section_type TEXT
+    section_type TEXT NOT NULL
 );
 
 CREATE UNIQUE INDEX contact_uuid_type_index

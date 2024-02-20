@@ -38,6 +38,7 @@ public class ResumeTestData {
         //////////////////////// Add contacts to resume ////////////////////////
         resume.addContact(ContactType.PHONE_NUMBER, "911");
         resume.addContact(ContactType.HOMEPAGE, "https://www.urise.com");
+        resume.addContact(ContactType.EMAIL, "hello-world@mail.com");
 
         //////////////////////// Creating sections ////////////////////////
         TextSection personal = new TextSection(personalString);

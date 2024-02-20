@@ -21,6 +21,8 @@ public class Company implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
+    private static final Company DEFAULT = new Company("", "");
+
     private Link homepage;
     private List<Period> periods;
 
@@ -153,5 +155,9 @@ public class Company implements Serializable {
             Period period = (Period) o;
             return Objects.equals(title, period.title) && Objects.equals(description, period.description) && Objects.equals(beginDate, period.beginDate) && Objects.equals(endDate, period.endDate);
         }
+    }
+
+    public static Company getEmptyCompany() {
+        return DEFAULT;
     }
 }

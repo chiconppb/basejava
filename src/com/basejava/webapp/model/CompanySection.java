@@ -8,6 +8,7 @@ import java.util.Objects;
 public class CompanySection extends AbstractSection {
     @Serial
     private static final long serialVersionUID = 1L;
+    private static final CompanySection DEFAULT = new CompanySection(Company.getEmptyCompany());
 
     private final List<Company> companies = new ArrayList<>();
 
@@ -61,5 +62,9 @@ public class CompanySection extends AbstractSection {
     @Override
     public int hashCode() {
         return Objects.hash(companies);
+    }
+
+    public static AbstractSection getEmptySection() {
+        return DEFAULT;
     }
 }
