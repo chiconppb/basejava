@@ -64,7 +64,7 @@ public class CompanySection extends AbstractSection {
         return Objects.hash(companies);
     }
 
-    public static AbstractSection getEmptySection() {
+    public static CompanySection getEmptySection() {
         return DEFAULT;
     }
 }

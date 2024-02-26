@@ -176,7 +176,7 @@ public class SqlStorage implements Storage {
                 switch (section.getKey()) {
                     case PERSONAL, OBJECTIVE -> {
                         TextSection s = (TextSection) section.getValue();
-                        ps.setString(3, (s.getDescription()));
+                        ps.setString(3, (s.toString()));
                     }
                     case ACHIEVEMENT, QUALIFICATIONS -> {
                         ListSection s = (ListSection) section.getValue();

@@ -52,7 +52,7 @@ public class ListSection extends AbstractSection {
         return Objects.hash(strings);
     }
 
-    public static AbstractSection getEmptySection() {
+    public static ListSection getEmptySection() {
         return DEFAULT;
     }
 }

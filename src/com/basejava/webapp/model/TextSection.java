@@ -17,10 +17,6 @@ public class TextSection extends AbstractSection {
         text = description;
     }
 
-    public String getDescription() {
-        return text;
-    }
-
     @Override
     public String toString() {
         return text;
@@ -39,7 +35,7 @@ public class TextSection extends AbstractSection {
         return Objects.hash(text);
     }
 
-    public static AbstractSection getEmptySection() {
+    public static TextSection getEmptySection() {
         return DEFAULT;
     }
 }

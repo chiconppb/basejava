@@ -115,6 +115,6 @@ public class DataStreamSerializer implements Serializer {
     private void writeTextSection(AbstractSection section, DataOutputStream dataOutputStream) throws IOException {
         Objects.requireNonNull(dataOutputStream);
         TextSection textSection = (TextSection) section;
-        dataOutputStream.writeUTF(textSection.getDescription());
+        dataOutputStream.writeUTF(textSection.toString());
     }
 }

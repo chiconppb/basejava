@@ -1,8 +1,7 @@
 package com.basejava.webapp.web;
 
 import com.basejava.webapp.Config;
-import com.basejava.webapp.model.ContactType;
-import com.basejava.webapp.model.Resume;
+import com.basejava.webapp.model.*;
 import com.basejava.webapp.storage.Storage;
 
 import javax.servlet.ServletConfig;
@@ -40,6 +39,27 @@ public class ResumeServlet extends HttpServlet {
             case "view":
             case "edit":
                 r = storage.get(uuid);
+                for (SectionType sectionType : SectionType.values()) {
+                    AbstractSection section = r.getSection(sectionType);
+                    switch (sectionType) {
+                        case PERSONAL, OBJECTIVE:
+                            if (section == null) {
+                                section = TextSection.getEmptySection();
+                            }
+                            break;
+                        case QUALIFICATIONS, ACHIEVEMENT:
+                            if (section == null) {
+                                section = ListSection.getEmptySection();
+                            }
+                            break;
+                        case EDUCATION, EXPERIENCE:
+                            if (section == null) {
+                                section = CompanySection.getEmptySection();
+                            }
+                            break;
+                    }
+                    r.addSection(sectionType, section);
+                }
                 break;
             default:
                 throw new IllegalArgumentException("Action " + action + " is illegal.");
@@ -61,12 +81,30 @@ public class ResumeServlet extends HttpServlet {
             r = storage.get(uuid);
             r.setFullName(fullName);
         }
-        for (ContactType type : ContactType.values()) {
-            String value = request.getParameter(type.name());
+        for (ContactType contactType : ContactType.values()) {
+            String value = request.getParameter(contactType.name());
             if (value != null && !value.trim().isEmpty()) {
-                r.addContact(type, value);
+                r.addContact(contactType, value);
             } else {
-                r.getContacts().remove(type);
+                r.getContacts().remove(contactType);
+            }
+        }
+        for (SectionType sectionType : SectionType.values()) {
+            String value = request.getParameter(sectionType.name());
+            if (value != null && !value.trim().isEmpty()) {
+                switch (sectionType) {
+                    case PERSONAL, OBJECTIVE:
+                        r.addSection(sectionType, new TextSection(value));
+                        break;
+                    case ACHIEVEMENT, QUALIFICATIONS:
+                        r.addSection(sectionType, new ListSection(value));
+                        break;
+                    case EDUCATION, EXPERIENCE:
+                        new CompanySection();
+                        break;
+                }
+            } else {
+                r.getSections().remove(sectionType);
             }
         }
         if (uuid == null || uuid.isEmpty()) {
