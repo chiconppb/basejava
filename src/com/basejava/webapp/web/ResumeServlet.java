@@ -101,7 +101,7 @@ public class ResumeServlet extends HttpServlet {
                         break;
                     case ACHIEVEMENT, QUALIFICATIONS:
                         List<String> strings = new ArrayList<>(Arrays.stream(value.split("\n")).toList());
-                        strings.removeIf(s -> isEmpty(s) || s.length() < 2);
+                        strings.removeIf(s -> isEmpty(s) || s.isEmpty());
                         r.addSection(sectionType, new ListSection(strings));
                         break;
                     case EDUCATION, EXPERIENCE:
