@@ -10,8 +10,7 @@ public class ListSection extends AbstractSection {
     private static final long serialVersionUID = 1L;
     private static final ListSection DEFAULT = new ListSection("");
 
-
-    private final List<String> strings = new ArrayList<>();
+    private List<String> strings = new ArrayList<>();
 
     public ListSection() {
     }
@@ -19,6 +18,11 @@ public class ListSection extends AbstractSection {
     public ListSection(String text) {
         Objects.requireNonNull(text, "String type can't be null!");
         strings.add(text);
+    }
+
+    public ListSection(List<String> strings) {
+        Objects.requireNonNull(strings, "String type can't be null!");
+        this.strings = strings;
     }
 
     public void addString(String string) {

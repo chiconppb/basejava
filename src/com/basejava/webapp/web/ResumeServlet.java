@@ -10,6 +10,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 public class ResumeServlet extends HttpServlet {
@@ -75,7 +78,7 @@ public class ResumeServlet extends HttpServlet {
         String uuid = request.getParameter("uuid");
         String fullName = request.getParameter("fullName");
         Resume r;
-        if (uuid == null || uuid.isEmpty()) {
+        if (isEmpty(uuid)) {
             r = new Resume(fullName);
         } else {
             r = storage.get(uuid);
@@ -83,7 +86,7 @@ public class ResumeServlet extends HttpServlet {
         }
         for (ContactType contactType : ContactType.values()) {
             String value = request.getParameter(contactType.name());
-            if (value != null && !value.trim().isEmpty()) {
+            if (!isEmpty(value)) {
                 r.addContact(contactType, value);
             } else {
                 r.getContacts().remove(contactType);
@@ -91,13 +94,15 @@ public class ResumeServlet extends HttpServlet {
         }
         for (SectionType sectionType : SectionType.values()) {
             String value = request.getParameter(sectionType.name());
-            if (value != null && !value.trim().isEmpty()) {
+            if (!isEmpty(value)) {
                 switch (sectionType) {
                     case PERSONAL, OBJECTIVE:
                         r.addSection(sectionType, new TextSection(value));
                         break;
                     case ACHIEVEMENT, QUALIFICATIONS:
-                        r.addSection(sectionType, new ListSection(value));
+                        List<String> strings = new ArrayList<>(Arrays.stream(value.split("\n")).toList());
+                        strings.removeIf(s -> isEmpty(s) || s.length() < 2);
+                        r.addSection(sectionType, new ListSection(strings));
                         break;
                     case EDUCATION, EXPERIENCE:
                         new CompanySection();
@@ -107,11 +112,15 @@ public class ResumeServlet extends HttpServlet {
                 r.getSections().remove(sectionType);
             }
         }
-        if (uuid == null || uuid.isEmpty()) {
+        if (isEmpty(uuid)) {
             storage.save(r);
         } else {
             storage.update(r);
         }
         response.sendRedirect("resume");
+    }
+
+    private boolean isEmpty(String string) {
+        return string == null || string.trim().isEmpty();
     }
 }
